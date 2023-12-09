@@ -1,10 +1,12 @@
 import pygame as pg
+from Player import Player
+from textures import *
 pg.init()
 
-wight, height = 800, 600
+width, height = 800, 600
 FPS = 60
 
-screen = pg.display.set_mode((wight, height))
+screen = pg.display.set_mode((width, height))
 clock = pg.time.Clock()
 
 world = ["                                                  ",
@@ -28,7 +30,7 @@ world = ["                                                  ",
          "                                                  ",
          "                                                  ",
          "                                                  ",
-         "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+         "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
          "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
          "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
          "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"]
@@ -37,21 +39,27 @@ tile_size = 50
 
 world_x, world_y = 0, -tile_size * (len(world) - (height // tile_size))
 
+player = Player("images/imgonline-com-ua-Resize-4mpm1BvVfOwb16l.jpg",
+                screen.get_width() // 2, screen.get_height() - world_y - tile_size)
+
 play = True
 while play:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             play = False
-    keys = pg.key.get_pressed()
-    if keys[pg.K_a]:
-        world_x += 10
-    if keys[pg.K_d]:
-        world_x -= 10
 
-    if keys[pg.K_s]:
-        world_y -= 10
-    if keys[pg.K_w]:
-        world_y += 10
+    keys = pg.key.get_pressed()
+    if player.rect.center[0] < screen.get_width() // 2 - tile_size * 2.5:
+        if world_x != player.rect.center[0]:
+            world_x += 1
+    elif player.rect.center[0] > screen.get_width() // 2 + tile_size * 2.5:
+        if world_x != player.rect.center[0]:
+            world_x -= 1
+
+    # if keys[pg.K_s]:
+    #     world_y -= 10
+    # if keys[pg.K_w]:
+    #     world_y += 10
 
     screen.fill("blue")
 
@@ -62,10 +70,11 @@ while play:
 
             if world[row][col] == " ":
                 pg.draw.rect(screen, pg.Color('gray67'), (x, y, tile_size, tile_size), 1)
-            elif world[row][col] == "G":
-                pg.draw.rect(screen, pg.Color("green"), (x, y, tile_size, tile_size))
             elif world[row][col] == "E":
-                pg.draw.rect(screen, pg.Color('brown'), (x, y, tile_size, tile_size))
+                ground.draw(screen, x, y)
+
+    player.player_move()
+    player.update([grass_ground])
 
     pg.display.update()
     clock.tick(FPS)
