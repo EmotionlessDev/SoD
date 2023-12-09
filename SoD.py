@@ -64,20 +64,21 @@ while True:
         stone_wall, [0, 0, width_screen, height_screen]
     )  # установка заднего фона
 
-    scaled_surface = pygame.transform.scale(
-        virtual_surface, screen_size
-    )  # адаптация вертуального пространства под размер окна
     # ground
     ground_collisions = pygame.sprite.spritecollide(player.sprite, ground_group, False)
     ground_group.draw(virtual_surface)
     # player
-    player.draw(screen)
+    player.draw(virtual_surface)
     player.update(ground_collisions)
     # test
     screen.blit(test_images[0], (0, 0))
     screen.blit(test_images[4], (50, 0))
     # update display
+    scaled_surface = pygame.transform.scale(
+        virtual_surface, screen_size
+    )  # адаптация вертуального пространства под размер окна
     pygame.display.flip()
     screen.blit(scaled_surface, (0, 0))
+
     # Set ticks (fps)
     clock.tick(FPS)
