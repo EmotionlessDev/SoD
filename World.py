@@ -11,7 +11,6 @@ class World:
         self.decor = decor
 
     def world_generation(self, surface, pictures, group_spr, group_texture):
-
         for row in range(len(self.world_map)):
             for col in range(len(self.world_map[row])):
                 x = self.world_x + col * self.tile_size
@@ -20,11 +19,13 @@ class World:
                 if self.world_map[row][col] == " ":
                     pg.draw.rect(surface, pg.Color('gray67'), (x, y, self.tile_size, self.tile_size), 1)
                 else:
-                    group_spr.add(Block(pictures[self.world_map[row][col]],
-                                        (self.tile_size, self.tile_size), (x, y)))
+                    group_spr.add(Block(pictures[self.world_map[row][col]][0],
+                                        (self.tile_size, self.tile_size), (x, y),
+                                        pictures[self.world_map[row][col]][1],
+                                        pictures[self.world_map[row][col]][2]))
 
-                if self.decor[row][col] == " ":
-                    continue
-                else:
-                    group_texture.add(Decoration(pictures[self.decor[row][col]],
-                                                 (self.tile_size, self.tile_size), (x, y)))
+                if self.decor[row][col] != " ":
+                    group_texture.add(Decoration(pictures[self.decor[row][col]][0],
+                                                 (self.tile_size, self.tile_size), (x, y),
+                                                 pictures[self.decor[row][col]][1],
+                                                 pictures[self.decor[row][col]][2]))

@@ -8,7 +8,9 @@ pg.init()
 pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
 
 world = World(world_map, world_decoration, tile_size)
-sky = Decoration(r"textures/world/sky.png", screen_size, (0, 0))
+sky = Decoration(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
+
+world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
 
 while play:
     for event in pg.event.get():
@@ -22,10 +24,8 @@ while play:
 
     sky.draw(virtual_surface)
 
-    world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
-
-    blocks_group.draw(virtual_surface)
-    decoration_group.draw(virtual_surface)
+    decoration_group.update(0, virtual_surface)
+    blocks_group.update(0, virtual_surface)
 
     pg.display.flip()
     clock.tick(FPS)
