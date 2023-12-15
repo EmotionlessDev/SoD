@@ -3,8 +3,8 @@ from sys import exit
 from hero.Player import Player
 from ground.Ground import Ground
 from canvas import load_image
-from spritesheet.Spritesheet import Spritesheet
-# from spritesheet.SpriteStripAnim import SpriteStripAnim
+from enemies.Skeleton import Skeleton
+from import_sprite import import_sprite
 
 # Initialize Pygame
 pygame.init()
@@ -35,11 +35,18 @@ ground_group.add(ground_sprite2)
 # Player
 player = pygame.sprite.GroupSingle()
 player.add(Player("./sprites/character.png", width_screen, height_screen - 200))
-# test spritesheet
-ss = Spritesheet("./sprites/Skeleton/Sprite Sheets/Skeleton Idle.png")
-test_image = ss.image_at((0, 0, 32, 32))
-test_images = []
-test_images = ss.load_strip((0, 0, 22, 32), 5, colorkey=(0, 0, 0))
+# Skeleton
+skeleton_group = pygame.sprite.Group()
+skeleton1 = Skeleton(
+    import_sprite("./sprites/Skeleton/Idle"),
+    import_sprite("./sprites/Skeleton/Attack/"),
+    import_sprite("./sprites/Skeleton/Move/"),
+    50,
+    50,
+    player,
+)
+skeleton_group.add(skeleton1)
+
 # Start the main loop
 while True:
     # Check for events
@@ -70,15 +77,14 @@ while True:
     # player
     player.draw(virtual_surface)
     player.update(ground_collisions)
-    # test
-    screen.blit(test_images[0], (0, 0))
-    screen.blit(test_images[4], (50, 0))
+    # Skeleton test
+    skeleton_group.draw(virtual_surface)
+    skeleton_group.update()
     # update display
     scaled_surface = pygame.transform.scale(
         virtual_surface, screen_size
     )  # адаптация вертуального пространства под размер окна
     pygame.display.flip()
     screen.blit(scaled_surface, (0, 0))
-
     # Set ticks (fps)
     clock.tick(FPS)
