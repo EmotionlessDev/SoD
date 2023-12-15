@@ -5,14 +5,14 @@ pg.init()
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width, height):
+    def __init__(self, image_name, frame_count, x, y, width, height, scroll):
         super().__init__(image_name, frame_count, x, y, width, height)
-
         self.player_gravity = 0
         self.player_terminal_velocity = 10
         self.__last_direction = "right"
         self.jump_y = 0
         self.is_jumped = False
+        self.scroll = 0
 
         self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_increase_interval_ticks = 0
@@ -20,9 +20,9 @@ class Player(BaseCharacter):
     def walk(self, direction):
 
         if direction == "right":
-            self.x += 10
+            self.scroll = -10
         elif direction == "left":
-            self.x -= 10
+            self.scroll = 10
 
         if self.__last_direction != direction:
             self.image = pg.transform.flip(self.image, True, False)
@@ -34,9 +34,9 @@ class Player(BaseCharacter):
 
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             if self.__last_direction == "right":
-                self.x += jerk_value
+                self.scroll = -jerk_value
             else:
-                self.x -= jerk_value
+                self.scroll = jerk_value
 
             self.__last__jerk_ticks = pg.time.get_ticks()
 
@@ -62,6 +62,9 @@ class Player(BaseCharacter):
             self.walk('left')
         if bt[pg.K_w]:
             self.jerk()
+
+        if not (bt[pg.K_d] or bt[pg.K_a] or bt[pg.K_w]):
+            self.scroll = 0
 
     def update(self, surface, ground_collisions):
         self.draw(surface)

@@ -10,7 +10,9 @@ pg.display.set_caption("Shadow of Desolation")  # создание заголо�
 
 world = World(world_map, world_decoration, tile_size)
 sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
-player = Player(r"esev-sheet(main animation).png", 14, tile_size * 3, tile_size * 8, tile_size, tile_size * 2)
+player = Player(r"esev-sheet(main animation).png", 14,
+                virtual_surface.get_width() // 2, virtual_surface.get_height() - 4 * tile_size,
+                tile_size, tile_size * 2, 0)
 
 world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
 
@@ -26,8 +28,8 @@ while play:
 
     sky.draw(virtual_surface)
 
-    decoration_group.update(0, virtual_surface)
-    blocks_group.update(0, virtual_surface)
+    decoration_group.update(player.scroll, virtual_surface)
+    blocks_group.update(player.scroll, virtual_surface)
 
     ground_collisions = pg.sprite.spritecollide(player, blocks_group, False)
 
