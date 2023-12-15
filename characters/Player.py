@@ -1,39 +1,28 @@
 import pygame as pg
-from BaseCharacter import BaseCharacter
+from characters.BaseCharacter import BaseCharacter
 pg.init()
 
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width, height):
-        super().__init__(image_name, frame_count, x, y, width, height)
+    def __init__(self, image_name, x, y, width, height):
+        super().__init__(image_name, x, y, width, height)
 
         self.player_gravity = 0
         self.player_terminal_velocity = 10
-        self.__last_direction = "right"
         self.jump_y = 0
         self.is_jumped = False
 
         self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_increase_interval_ticks = 0
 
-    def walk(self, direction):
 
-        if direction == "right":
-            self.x += 10
-        elif direction == "left":
-            self.x -= 10
-
-        if self.__last_direction != direction:
-            self.image = pg.transform.flip(self.image, True, False)
-
-        self.__last_direction = direction
 
     def jerk(self):
         jerk_value = 150
 
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
-            if self.__last_direction == "right":
+            if self.last_direction == "right":
                 self.x += jerk_value
             else:
                 self.x -= jerk_value
@@ -52,20 +41,34 @@ class Player(BaseCharacter):
             self.player_gravity += 1
         self.y += self.player_gravity
 
+    def jump(self):
+        self.y += -50 + 0.5
+
+    def attack(self):
+        self.animation('attack')
+        print("seffsfse")
+
     def controls(self):
         bt = pg.key.get_pressed()
         if bt[pg.K_SPACE] and self.on_ground:
-            self.y += -50 + 0.5
-        if bt[pg.K_d]:
+            self.jump()
+        elif bt[pg.K_d]:
             self.walk("right")
-        if bt[pg.K_a]:
+        elif bt[pg.K_a]:
             self.walk('left')
-        if bt[pg.K_w]:
+        elif bt[pg.K_w]:
             self.jerk()
+        elif bt[pg.K_e]:
+            self.attack()
+        else:
+            self.animation("base")
+
+
+
 
     def update(self, surface, ground_collisions):
         self.draw(surface)
         self.controls()
         self.apply_gravity(ground_collisions)
 
-        self.frame = (self.frame + 0.2) % self.frame_count
+

@@ -1,16 +1,16 @@
-import pygame as pg
 import sys
 from World import World
 from Blocks import Block
 from Constants import *
-from Player import Player
+from characters.Player import Player
 pg.init()
 
 pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
 
 world = World(world_map, world_decoration, tile_size)
 sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
-player = Player(r"esev-sheet(main animation).png", 14, tile_size * 3, tile_size * 8, tile_size, tile_size * 2)
+
+player = Player("hero", tile_size * 3, tile_size * 8, tile_size, tile_size * 2)
 
 world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
 
