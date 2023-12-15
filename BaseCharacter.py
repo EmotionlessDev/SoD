@@ -1,9 +1,5 @@
 import pygame as pg
-import Constants
-
-clock = pg.time.Clock()
-
-running = True
+pg.init()
 
 
 class BaseCharacter(pg.sprite.Sprite):
@@ -13,26 +9,19 @@ class BaseCharacter(pg.sprite.Sprite):
         self.x = x
         self.y = y
 
-        self.image = pg.image.load(r"creatures/sprites/" + image_name + ".png").convert_alpha()
+        self.image = pg.image.load(r"characters/" + image_name).convert_alpha()
         self.image = pg.transform.scale(self.image, (width * frame_count, height))
-        self.frame_width = int(self.image.get_width() / frame_count)
+        self.frame_width = self.image.get_width() // frame_count
         self.frame_height = self.image.get_height()
 
-        self.image_rect = pg.Rect(x, y, self.frame_width, self.frame_height)
+        self.rect = pg.Rect(x, y, self.frame_width, self.frame_height)
 
         self.frame_count = frame_count
         self.frame = 0
 
-    def draw(self):
+        self.on_ground = False
 
-        self.image_rect = pg.Rect(self.x, self.y, self.frame_width, self.frame_height)
-
-        Constants.virtual_surface.fill("black")
-        Constants.virtual_surface.blit(self.image, self.image_rect,
-                    (self.frame_width * int(self.frame), 0, self.frame_width, self.frame_height))
-        # pg.draw.rect(screen, ("white"), self.image_rect, 2)
-
-
-
-
-
+    def draw(self, surface):
+        self.rect = pg.Rect(self.x, self.y, self.frame_width, self.frame_height)
+        surface.blit(self.image, self.rect,
+                     (self.frame_width * int(self.frame), 0, self.frame_width, self.frame_height))
