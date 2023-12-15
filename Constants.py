@@ -17,6 +17,8 @@ tile_size = 50
 blocks_group = pg.sprite.Group()
 decoration_group = pg.sprite.Group()
 
+all_world = pg.sprite.Group(blocks_group, decoration_group)
+
 pictures = {"g": [r"textures/world/Blocks/grass.png", 1, (0, 0)],
             "G": [r"textures/world/Blocks/ground.png", 1, (0, 0)],
             "D": [r"textures/world/Blocks/dirt.png", 1, (0, 0)],
@@ -29,10 +31,10 @@ world_map = [
     "                                                  ",
     "                                                  ",
     "                                                  ",
-    "  P                                               ",
-    "                                                  ",
-    "                                                  ",
-    "                                                  ",
+    "       P                                          ",
+    "                               D                  ",
+    "               DDDD      D     D                  ",
+    "                        D      D                  ",
     "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 ]
@@ -47,7 +49,7 @@ world_decoration = [
     "                                                  ",
     "                                                  ",
     "                                                  ",
-    "gggggggggggggggggggggggggggggggggggggggggggggggggg",
+    "ggggggggggg                                       ",
     "                                                  ",
     "                                                  "
 ]
