@@ -1,5 +1,5 @@
 import pygame as pg
-from Blocks import Block, Decoration
+from Blocks import Block
 pg.init()
 
 
@@ -25,7 +25,7 @@ class World:
                                         pictures[self.world_map[row][col]][2]))
 
                 if self.decor[row][col] != " ":
-                    group_texture.add(Decoration(pictures[self.decor[row][col]][0],
-                                                 (self.tile_size, self.tile_size), (x, y),
-                                                 pictures[self.decor[row][col]][1],
-                                                 pictures[self.decor[row][col]][2]))
+                    group_texture.add(Block(pictures[self.decor[row][col]][0],
+                                            (self.tile_size, self.tile_size), (x, y),
+                                            pictures[self.decor[row][col]][1],
+                                            pictures[self.decor[row][col]][2]))

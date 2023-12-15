@@ -1,14 +1,16 @@
 import pygame as pg
 import sys
 from World import World
-from Blocks import Decoration
+from Blocks import Block
 from Constants import *
+from Player import Player
 pg.init()
 
 pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
 
 world = World(world_map, world_decoration, tile_size)
-sky = Decoration(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
+sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
+player = Player(r"esev-sheet(main animation).png", 14, tile_size * 3, tile_size * 8, tile_size, tile_size * 2)
 
 world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
 
@@ -26,6 +28,10 @@ while play:
 
     decoration_group.update(0, virtual_surface)
     blocks_group.update(0, virtual_surface)
+
+    ground_collisions = pg.sprite.spritecollide(player, blocks_group, False)
+
+    player.update(virtual_surface, ground_collisions)
 
     pg.display.flip()
     clock.tick(FPS)

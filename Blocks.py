@@ -42,8 +42,3 @@ class Block(pg.sprite.Sprite):
         self.rect.move_ip(x, 0)
         self.position = self.rect.x, self.rect.y
 
-
-class Decoration(Block):
-
-    def __init__(self, image, size, position, columns, re_size):
-        super().__init__(image, size, position, columns, re_size)

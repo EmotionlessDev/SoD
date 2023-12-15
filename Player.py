@@ -1,15 +1,11 @@
-import pygame
-import time
-from creatures.BaseCharacter import BaseCharacter
-
-# pygame.init()
-# W, H = 1420, 800
-# screen = pygame.display.set_mode((W, H))
+import pygame as pg
+from BaseCharacter import BaseCharacter
+pg.init()
 
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width=50, height=100):
+    def __init__(self, image_name, frame_count, x, y, width, height):
         super().__init__(image_name, frame_count, x, y, width, height)
 
         self.player_gravity = 0
@@ -18,8 +14,9 @@ class Player(BaseCharacter):
         self.jump_y = 0
         self.is_jumped = False
 
-        self.__last__jerk_ticks = pygame.time.get_ticks()
+        self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_increase_interval_ticks = 0
+
     def walk(self, direction):
 
         if direction == "right":
@@ -28,60 +25,47 @@ class Player(BaseCharacter):
             self.x -= 10
 
         if self.__last_direction != direction:
-            self.image = pygame.transform.flip(self.image, 1, 0)
+            self.image = pg.transform.flip(self.image, True, False)
 
         self.__last_direction = direction
 
     def jerk(self):
-
         jerk_value = 150
 
-        if pygame.time.get_ticks() - self.__last__jerk_ticks >= 1300:
+        if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             if self.__last_direction == "right":
                 self.x += jerk_value
             else:
                 self.x -= jerk_value
 
-            self.__last__jerk_ticks = pygame.time.get_ticks()
+            self.__last__jerk_ticks = pg.time.get_ticks()
+
+    def apply_gravity(self, ground_collisions):
+        if ground_collisions:
+            for ground in ground_collisions:
+                if self.rect.bottom >= ground.rect.top + 10:
+                    self.rect.bottom = ground.rect.top + 10
+                    self.player_gravity = 0
+                    self.on_ground = True
+        elif self.player_gravity < self.player_terminal_velocity:
+            self.on_ground = False
+            self.player_gravity += 1
+        self.y += self.player_gravity
 
     def controls(self):
-        bt = pygame.key.get_pressed()
-        # if bt[pygame.K_SPACE]:
-        #     self.jump()
-        if bt[pygame.K_d]:
+        bt = pg.key.get_pressed()
+        if bt[pg.K_SPACE] and self.on_ground:
+            self.y += -50 + 0.5
+        if bt[pg.K_d]:
             self.walk("right")
-        if bt[pygame.K_a]:
+        if bt[pg.K_a]:
             self.walk('left')
-        if bt[pygame.K_w]:
+        if bt[pg.K_w]:
             self.jerk()
 
-    def update(self):
-        self.draw()
+    def update(self, surface, ground_collisions):
+        self.draw(surface)
         self.controls()
+        self.apply_gravity(ground_collisions)
 
         self.frame = (self.frame + 0.2) % self.frame_count
-
-
-
-
-    # def player_move(self):
-    #     keys = pygame.key.get_pressed()
-    #
-    #     if keys[pygame.K_w]:
-    #         self.player_gravity = -10
-    #
-    # def apply_gravity(self, ground_collisions):
-    #     if self.player_gravity < self.player_terminal_velocity:
-    #         self.player_gravity += 1
-    #     if ground_collisions:
-    #         for ground in ground_collisions:
-    #             if self.image_rect.bottom <= ground.mask.get_image_rect().left + 10:
-    #                 self.image_rect.bottom = ground.mask.get_image_rect().top
-    #                 self.player_gravity = 0
-    #     self.image_rect.y += self.player_gravity
-    #
-    #
-    #
-    # def update(self, ground_collisions):
-    #     self.player_move()
-    #     self.apply_gravity(ground_collisions)
