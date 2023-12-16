@@ -43,9 +43,7 @@ class Player(BaseCharacter):
     def jump(self):
         self.y += -50 + 0.5
 
-    def attack(self):
-        self.animation('attack')
-        print("seffsfse")
+
 
     def controls(self):
         bt = pg.key.get_pressed()

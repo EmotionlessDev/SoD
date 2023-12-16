@@ -1,5 +1,4 @@
 import pygame as pg
-
 pg.init()
 
 
@@ -9,52 +8,41 @@ class BaseCharacter(pg.sprite.Sprite):
 
         self.x = x
         self.y = y
-        self.width = 100
-        self.height = 200
+        self.width = width
+        self.height = height
+        self.image_name = image_name
 
-        self.frame_count_from_images = {
+        self.cur_animation = "base"
+
+        self.correctiveW = 0
+        self.correctiveH = 0
+
+        self.settings_in_images = {
             "base": 14,
             "attack": 10
         }
+        
 
-        self.kW = pg.image.load(r"characters/sprites/" + image_name + "_attack.png").convert_alpha().get_width() // self.frame_count_from_images["base"] // width
-        self.kH = pg.image.load(r"characters/sprites/" + image_name + "_attack.png").convert_alpha().get_height() // height
-
-
-
-        self.imagesNotNormalize = {
-            "base": pg.image.load(r"characters/sprites/" + image_name + "_base.png").convert_alpha(),
-            "attack": pg.image.load(r"characters/sprites/" + image_name + "_attack.png").convert_alpha(),
+        self.images = {
+            "base": pg.image.load(r"characters/sprites/" + self.image_name + "_base.png").convert_alpha(),
+            "attack": pg.image.load(r"characters/sprites/" + self.image_name + "_attack.png").convert_alpha()
         }
-        # ----------------
-        self.images = {}
 
-        for image_type in self.imagesNotNormalize.keys():
-            width = self.imagesNotNormalize[image_type].get_width() * self.kW
-            height = self.imagesNotNormalize[image_type].get_height() * self.kH
-            self.images[image_type] = pg.transform.scale(
-                pg.image.load(r"characters/sprites/" + image_name + "_" + image_type + ".png").convert_alpha(),
-                (width, height))
 
-        self.cur_animation = "base"
         self.image = self.images[self.cur_animation]
+
+
+
         self.frame = 0
 
-        self.rect = pg.Rect(self.x, self.y, self.width * self.kW  , self.height * self.kH)
+        self.rect = pg.Rect(self.x , self.y , self.width, self.height)
         self.on_ground = False
         self.last_direction = 'right'
         self.direction = "right"
 
-    def animation(self, animation_name="base"):
-        self.cur_animation = animation_name
 
-        frame_count = self.frame_count_from_images[animation_name]
-        self.frame = (self.frame + 0.2) % frame_count
 
-        self.image = self.images[self.cur_animation]
 
-        if self.direction == 'left':
-            self.image = pg.transform.flip(self.image, True, False)
 
     def walk(self, direction):
         self.animation()
@@ -65,9 +53,52 @@ class BaseCharacter(pg.sprite.Sprite):
             self.x -= 10
 
         self.last_direction = self.direction
+    def attack(self):
+        self.animation('attack')
+        print("seffsfse")
+
+    def animation(self, animation_name="base"):
+        if animation_name != self.cur_animation:
+            self.frame = 0
+
+        self.cur_animation = animation_name
+
+
+        frame_count = self.settings_in_images[animation_name]
+        self.frame = (self.frame + 0.2) % frame_count
+
+        self.image = self.images[self.cur_animation]
+
+        if self.direction =='left':
+            self.image = pg.transform.flip(self.image, True, False)
+
 
     def draw(self, surface):
+        if self.cur_animation == "base":
+            cur_image = pg.transform.scale(self.image,
+                                       (self.width * self.settings_in_images["base"], self.height))
+            self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
-        self.rect = pg.Rect(self.x, self.y, self.width, self.height)
-        surface.blit(self.image, self.rect,
-                     (self.width * int(self.frame), 0, self.width * self.kW, self.height * self.kH))
+            surface.blit(cur_image, self.rect,
+                         ((self.width ) * int(self.frame), 0, self.width,
+                          self.height))
+
+        elif self.cur_animation == "attack":
+            cur_image = pg.transform.scale(self.image,
+                                       ((self.width +6)  * self.settings_in_images["attack"] , self.height + 10))
+            self.rect = pg.Rect(self.x + 3, self.y - 10, self.width, self.height)
+            print(cur_image)
+
+            surface.blit(cur_image, self.rect,
+                         ((self.width + 6) * int(self.frame), 0, self.width + 6, self.height ))
+
+
+
+
+
+
+
+
+
+        # pg.draw.rect(surface, (64, 128, 255),
+        #                  (self.x, self.y, self.width + self.correctiveW, self.height + self.correctiveH), 2)
