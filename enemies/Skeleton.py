@@ -21,9 +21,10 @@ class Skeleton(pygame.sprite.Sprite):
         self.speed = 0
         self.damage = 1
         self.move = 0
+        self.gravity = 10
         self.walking = None  # True - Right, False - Left, None - not walking
         self.move_delay = 0
-        self.enemy_attack_radius = 10
+        self.enemy_attack_radius = 70
         self.enemy_visibility_radius = 300
         self.target = target
 
@@ -85,12 +86,35 @@ class Skeleton(pygame.sprite.Sprite):
         else:
             return False
 
+    def in_attack_radius(self):
+        pos_x = self.rect.x
+        pos_y = self.rect.y
+        pos_target_x = self.target.sprite.rect.x
+        pos_target_y = self.target.sprite.rect.y
+        if (
+            sqrt((pos_target_x - pos_x) ** 2 + (pos_target_y - pos_y) ** 2)
+            < self.enemy_attack_radius
+        ):
+            return True
+        else:
+            return False
+
     def dist_to_target(self):
         pos_x = self.rect.x
         pos_y = self.rect.y
         pos_target_x = self.target.sprite.rect.x
         pos_target_y = self.target.sprite.rect.y
         return sqrt((pos_target_x - pos_x) ** 2 + (pos_target_y - pos_y) ** 2)
+
+    def dist_to_target_x(self):
+        pos_x = self.rect.x
+        pos_target_x = self.target.sprite.rect.x
+        return abs(pos_target_x - pos_x)
+
+    def dist_to_target_y(self):
+        pos_y = self.rect.y
+        pos_target_y = self.target.sprice.rect.y
+        return abs(pos_target_y - pos_y)
 
     def attack(self):
         pass
@@ -118,10 +142,31 @@ class Skeleton(pygame.sprite.Sprite):
         else:
             self.enemy_attack_index = 0
 
-    def update(self):
+    def apply_gravity(self, ground_collisions):
+        if self in ground_collisions:
+            for ground in ground_collisions[self]:
+                if self.rect.bottom >= ground.rect.top:
+                    self.rect.bottom = ground.rect.top + 1
+                    self.gravity = 0
+        else:
+            self.gravity = 10
+        self.rect.y += self.gravity
+
+    # Function that leaves the mob in place relative to the world
+    def scroll(self):
+        self.rect.move_ip(self.target.sprite.scroll, 0)
+
+    #   self.rect.x += self.target.sprite.scroll
+
+    def update(self, ground_collisions):
+        self.apply_gravity(ground_collisions)
+        self.scroll()
         # if target in radius
-        if self.in_visibility_radius():
-            if self.dist_to_target() > 0:
+        if self.in_attack_radius():
+            self.animate_attack()
+            self.attack()
+        elif self.in_visibility_radius():
+            if self.dist_to_target_x() > 0:
                 self.animate_move()
                 self.move_to((self.target.sprite.rect.x, self.target.sprite.rect.y))
             else:

@@ -68,7 +68,11 @@ while play:
     # player
     player.update(virtual_surface, ground_collisions)
     # Enemies
+    ground_collisions_enemies = pg.sprite.groupcollide(
+        skeleton_group, blocks_group, False, False
+    )
     skeleton_group.draw(virtual_surface)
-    skeleton_group.update()
+    for skeleton in skeleton_group:
+        skeleton.update(ground_collisions_enemies)
     pg.display.flip()
     clock.tick(FPS)
