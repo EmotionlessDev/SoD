@@ -30,7 +30,7 @@ class Player(BaseCharacter):
         self.__last_direction = direction
 
     def jerk(self):
-        jerk_value = 150
+        jerk_value = 50
 
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             if self.__last_direction == "right":
