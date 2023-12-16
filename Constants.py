@@ -53,3 +53,11 @@ world_decoration = [
     "                                                  ",
     "                                                  "
 ]
+
+background_music = pg.mixer.music.load(r'sounds/background_music.wav')
+pg.mixer.music.play(-1)
+
+cursor = pg.image.load(r'menu/cursor.png').convert_alpha()
+pg.mouse.set_visible(False)
+
+font = pg.font.SysFont('serif', 72)
