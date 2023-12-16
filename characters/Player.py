@@ -1,5 +1,6 @@
 import pygame as pg
 from characters.BaseCharacter import BaseCharacter
+
 pg.init()
 
 
@@ -15,8 +16,6 @@ class Player(BaseCharacter):
 
         self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_increase_interval_ticks = 0
-
-
 
     def jerk(self):
         jerk_value = 150
@@ -63,12 +62,7 @@ class Player(BaseCharacter):
         else:
             self.animation("base")
 
-
-
-
     def update(self, surface, ground_collisions):
         self.draw(surface)
         self.controls()
         self.apply_gravity(ground_collisions)
-
-
