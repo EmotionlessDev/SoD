@@ -55,7 +55,7 @@ class Player(BaseCharacter):
             self.walk('left')
         elif bt[pg.K_w]:
             self.jerk()
-        elif bt[pg.K_e]:
+        elif pg.mouse.get_pressed()[0]:
             self.attack()
         else:
             self.animation("base")
