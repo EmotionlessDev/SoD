@@ -4,8 +4,10 @@ from World import World
 from Blocks import Block
 from Constants import *
 from Player import Player
+from Menu import *
 from import_sprite import import_sprite  # function for importion sprite in dir
 from enemies.Skeleton import Skeleton  # Skeleton class
+
 
 pg.init()
 
@@ -55,6 +57,10 @@ while play:
             sys.exit()
         if event.type == pg.VIDEORESIZE:
             screen_size = event.size  # регистрация изменения окна
+
+        # if event.type == pg.KEYDOWN:
+            # if event.key == pg.K_ESCAPE:
+            #     Menu.fade()
 
     scaled_surface = pg.transform.scale(virtual_surface, screen_size)
     screen.blit(scaled_surface, (0, 0))
