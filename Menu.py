@@ -6,153 +6,123 @@ pg.init()
 
 
 class Menu:
-    def __init__(self, bg_image, menu_font, surface, text_y):
-        self.bg_image = pg.image.load(bg_image)
-        self.menu_font = menu_font
+    def __init__(self, bg_image, menu_font, surface, text_y, width_btn, height_btn):
         self.surface = surface
+        self.bg_image = pg.image.load(bg_image)
+        self.bg_image = pg.transform.scale(self.bg_image, self.surface.get_size())
+        self.menu_font = menu_font
         self.text_y = text_y
-
-    def fade(self):
-        fade_alpha = 0
-
-        fade_surface = pg.Surface((self.surface.get_width(), self.surface.get_height()))
-        fade_surface.fill((0, 0, 0))
-        fade_surface.set_alpha(fade_alpha)
-        self.surface.blit(fade_surface, (0, 0))
-
-        fade_alpha += 5
-        if fade_alpha >= 105:
-            fade_alpha = 255
-
-
-class MainMenu(Menu):
-    def __init__(self, bg_image, menu_font, surface, text_y, width_btn, height_btn, menu_windows):
-        super().__init__(bg_image, menu_font, surface, text_y)
         self.width_btn = width_btn
-        self.menu_windows = menu_windows
+        self.height_btn = height_btn
 
-        self.start_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150, width_btn, height_btn,
+        self.playing = False
+        self.current_window = "Start"
+
+        self.start_button = Button(self.surface.get_width() // 2 - self.width_btn // 2, 150,
+                                   self.width_btn, self.height_btn,
                                    "Новая игра", r"menu/button_img.png",
-                                   r"menu/button_img.png", r"sounds/button_click.mp3")
-        self.settings_button = Button(self.surface.get_width() // 2 - width_btn // 2, 250, width_btn, height_btn,
+                                   r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.settings_button = Button(self.surface.get_width() // 2 - self.width_btn // 2, 250,
+                                      self.width_btn, self.height_btn,
                                       "Настройки", r"menu/button_img.png",
-                                      r"menu/button_img.png", r"sounds/button_click.mp3")
-        self.exit_button = Button(self.surface.get_width() // 2 - width_btn, 350, width_btn, height_btn,
+                                      r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.exit_button = Button(self.surface.get_width() // 2 - self.width_btn // 2, 350,
+                                  self.width_btn, self.height_btn,
                                   "Выйти", r"menu/button_img.png",
-                                  r"menu/button_img.png", r"sounds/button_click.mp3")
-
-        self.text_surface = menu_font.render("MENU", True, (255, 255, 255))
-        self.text_rect = self.text_surface.get_rect(center=(width_btn // 2, self.text_y))
-
-    def controls(self):
-        buttons = [self.start_button,  self.settings_button, self.exit_button]
-
-        for event in pg.event.get():
-            if event.type == pg.USEREVENT and event.button == self.start_button:
-                self.fade()
-                #opening
-
-            if event.type == pg.USEREVENT and event.button == self.settings_button:
-                self.fade()
-                self.menu_windows.draw()
-
-            if event.type == pg.USEREVENT and event.button == self.exit_button:
-                sys.exit()
-
-            for btn in buttons:
-                btn.handle_event(event)
-
-    def draw(self):
-        self.surface.blit(self.bg_image, (0, 0))
-        self.surface.blit(self.text_surface, self.text_rect)
-        self.controls()
-
-
-class SettingsMenu(Menu):
-    def __init__(self, bg_image, menu_font, surface, text_y, width_btn, height_btn, menu_windows):
-        super().__init__(bg_image, menu_font, surface, text_y)
-        self.width_btn = width_btn
-        self.main_menu, self.audio_menu = menu_windows
-
-        self.audio_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150, width_btn, height_btn,
+                                  r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.audio_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150,
+                                   width_btn, height_btn,
                                    " Аудио", r"menu/button_img.png",
-                                   r"menu/button_img.png", r"sounds/button_click.mp3")
-        self.back_button = Button(self.surface.get_width() // 2 - width_btn // 2, 350, width_btn, height_btn,
-                                  "Выход", r"menu/button_img.png",
-                                  r"menu/button_img.png", r"sounds/button_click.mp3")
-
-        self.text_surface = menu_font.render("Settings", True, (255, 255, 255))
-        self.text_rect = self.text_surface.get_rect(center=(width_btn // 2, self.text_y))
-
-    def controls(self):
-        buttons = [self.audio_button, self.back_button]
-
-        for event in pg.event.get():
-            if event.type == pg.USEREVENT and event.button == self.audio_button:
-                self.fade()
-                self.audio_menu.draw()
-
-            if event.type == pg.USEREVENT and event.button == self.back_button:
-                self.fade()
-                self.main_menu.draw()
-
-            for btn in buttons:
-                btn.handle_event(event)
-
-    def draw(self):
-        self.surface.blit(self.bg_image, (0, 0))
-        self.surface.blit(self.text_surface, self.text_rect)
-        self.controls()
-
-
-class AudioMenu(Menu):
-    def __init__(self, bg_image, menu_font, surface, text_y, width_btn, height_btn, menu_windows):
-        super().__init__(bg_image, menu_font, surface, text_y)
-        self.width_btn = width_btn
-        self.settings_menu = menu_windows
-
-        self.audio_music_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150, width_btn, height_btn,
-                                         "Настройки музыки", r"menu/button_img.png",
-                                         r"menu/button_img.png", r"sounds/button_click.mp3")
-        self.audio_sound_button = Button(self.surface.get_width() // 2 - width_btn // 2, 250, width_btn, height_btn,
-                                         "Настройки звуковых эффектов", r"menu/button_img.png",
-                                         r"menu/button_img.png", r"sounds/button_click.mp3")
-        self.back_button = Button(self.surface.get_width() // 2 - width_btn // 2, 350, width_btn, height_btn,
+                                   r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.back_button = Button(self.surface.get_width() // 2 - width_btn // 2, 350,
+                                  width_btn, height_btn,
                                   "Назад", r"menu/button_img.png",
-                                  r"menu/button_img.png", r"sounds/button_click.mp3")
-
+                                  r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.audio_music_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150,
+                                         width_btn, height_btn,
+                                         "Настройки музыки", r"menu/button_img.png",
+                                         r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.audio_sound_button = Button(self.surface.get_width() // 2 - width_btn // 2, 250,
+                                         width_btn, height_btn,
+                                         "Настройки звуковых эффектов", r"menu/button_img.png",
+                                         r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
         self.volume_slider = VolumeSlider(self.surface.get_width() // 2, 250, 250, 40)
 
-        self.text_surface = menu_font.render("Audio Settings", True, (255, 255, 255))
-        self.text_rect = self.text_surface.get_rect(center=(width_btn // 2, self.text_y))
-
-    def controls(self):
-        buttons = [self.audio_music_button, self.back_button]
+    def start_menu(self):
+        text_surface = self.menu_font.render("Shadow of Desolation", True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.surface.get_width() // 2, self.text_y))
+        self.surface.blit(text_surface, text_rect)
 
         for event in pg.event.get():
-            if event.type == pg.USEREVENT and event.button == self.back_button:
-                self.fade()
-                self.settings_menu.draw()
+            if self.start_button.is_hovered and \
+                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                self.playing = True
 
-            self.volume_slider.handle_event(event)
+            if self.settings_button.is_hovered and \
+               event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                self.current_window = "Settings"
 
-            for btn in buttons:
+            if self.exit_button.is_hovered and \
+                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                sys.exit()
+
+            for btn in [self.start_button, self.settings_button, self.exit_button]:
                 btn.handle_event(event)
 
-        for btn in buttons:
+        for btn in [self.start_button, self.settings_button, self.exit_button]:
             btn.check_hover(pg.mouse.get_pos())
             btn.draw(self.surface)
+
+    def settings_menu(self):
+        text_surface = self.menu_font.render("Settings", True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.width_btn // 2, self.text_y))
+        self.surface.blit(text_surface, text_rect)
+
+        for event in pg.event.get():
+            if self.audio_button.is_hovered and \
+                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                self.current_window = "Audio"
+
+            if self.back_button.is_hovered and \
+                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                self.current_window = "Start"
+
+            for btn in [self.audio_button, self.back_button]:
+                btn.handle_event(event)
+
+        for btn in [self.audio_button, self.back_button]:
+            btn.check_hover(pg.mouse.get_pos())
+            btn.draw(self.surface)
+
+    def audio_menu(self):
+        text_surface = self.menu_font.render("Audio Settings", True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.width_btn // 2, self.text_y))
+        self.surface.blit(text_surface, text_rect)
+
         self.volume_slider.draw(self.surface)
 
-            # if event.type == pygame.USEREVENT and event.button == Audio_music_button:
+        for event in pg.event.get():
+            if self.back_button.is_hovered and \
+                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                self.current_window = "Settings"
 
-                # running = False
+            for btn in [self.audio_music_button, self.audio_sound_button, self.back_button, self.volume_slider]:
+                btn.handle_event(event)
 
-            # if event.type == pygame.USEREVENT and event.button == Audio_sounds_button:
+        for btn in [self.audio_button, self.back_button]:
+            btn.check_hover(pg.mouse.get_pos())
+            btn.draw(self.surface)
 
-                # running = False
+    def menu_selection(self):
+        if self.current_window == "Start":
+            self.start_menu()
+
+        if self.current_window == "Settings":
+            self.settings_menu()
+
+        if self.current_window == "Audio":
+            self.audio_menu()
 
     def draw(self):
         self.surface.blit(self.bg_image, (0, 0))
-        self.surface.blit(self.text_surface, self.text_rect)
-        self.controls()
+        self.menu_selection()
