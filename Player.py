@@ -5,7 +5,7 @@ pg.init()
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width, height, scroll):
+    def __init__(self, image_name, frame_count, x, y, width, height):
         super().__init__(image_name, frame_count, x, y, width, height)
         self.player_gravity = 0
         self.player_terminal_velocity = 10
@@ -30,7 +30,7 @@ class Player(BaseCharacter):
         self.__last_direction = direction
 
     def jerk(self):
-        jerk_value = 150
+        jerk_value = 50
 
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             if self.__last_direction == "right":
