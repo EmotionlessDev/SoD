@@ -61,7 +61,7 @@ while play:
     if menu.playing:
         # sky
         sky.draw(virtual_surface)
-        # decorations
+        # world
         decoration_group.update(player.sprite.scroll, virtual_surface)
         blocks_group.update(player.sprite.scroll, virtual_surface)
         # ground

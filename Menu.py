@@ -48,26 +48,44 @@ class Menu:
                                          r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
         self.volume_slider = VolumeSlider(self.surface.get_width() // 2, 250, 250, 40)
 
+    def fade(self):
+        running = True
+        fade_alpha = 0
+        while running:
+
+            fade_surface = pg.Surface(self.surface.get_size())
+            fade_surface.fill((0, 0, 0))
+            fade_surface.set_alpha(fade_alpha)
+            self.surface.blit(fade_surface, (0, 0))
+
+            fade_alpha += 5
+            if fade_alpha >= 105:
+                fade_alpha = 255
+                running = False
+
+            pg.display.flip()
+            pg.time.Clock().tick(60)
+
     def start_menu(self):
         text_surface = self.menu_font.render("Shadow of Desolation", True, (255, 255, 255))
         text_rect = text_surface.get_rect(center=(self.surface.get_width() // 2, self.text_y))
         self.surface.blit(text_surface, text_rect)
 
-        for event in pg.event.get():
-            if self.start_button.is_hovered and \
-                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                self.playing = True
+        keys = pg.mouse.get_pressed()
+        if keys[0] and self.start_button.is_hovered:
+            self.fade()
+            self.playing = True
 
-            if self.settings_button.is_hovered and \
-               event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                self.current_window = "Settings"
+        if keys[0] and self.settings_button.is_hovered:
+            self.fade()
+            self.current_window = "Settings"
 
-            if self.exit_button.is_hovered and \
-                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                sys.exit()
+        if keys[0] and self.exit_button.is_hovered:
+            self.fade()
+            sys.exit()
 
-            for btn in [self.start_button, self.settings_button, self.exit_button]:
-                btn.handle_event(event)
+        for btn in [self.start_button, self.settings_button, self.exit_button]:
+            btn.handle_event(keys[0])
 
         for btn in [self.start_button, self.settings_button, self.exit_button]:
             btn.check_hover(pg.mouse.get_pos())
@@ -75,20 +93,20 @@ class Menu:
 
     def settings_menu(self):
         text_surface = self.menu_font.render("Settings", True, (255, 255, 255))
-        text_rect = text_surface.get_rect(center=(self.width_btn // 2, self.text_y))
+        text_rect = text_surface.get_rect(center=(self.surface.get_width() // 2, self.text_y))
         self.surface.blit(text_surface, text_rect)
 
-        for event in pg.event.get():
-            if self.audio_button.is_hovered and \
-                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                self.current_window = "Audio"
+        keys = pg.mouse.get_pressed()
+        if keys[0] and self.audio_button.is_hovered:
+            self.fade()
+            self.current_window = "Audio"
 
-            if self.back_button.is_hovered and \
-                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                self.current_window = "Start"
+        if keys[0] and self.back_button.is_hovered:
+            self.fade()
+            self.current_window = "Start"
 
-            for btn in [self.audio_button, self.back_button]:
-                btn.handle_event(event)
+        for btn in [self.audio_button, self.back_button]:
+            btn.handle_event(keys[0])
 
         for btn in [self.audio_button, self.back_button]:
             btn.check_hover(pg.mouse.get_pos())
@@ -96,18 +114,20 @@ class Menu:
 
     def audio_menu(self):
         text_surface = self.menu_font.render("Audio Settings", True, (255, 255, 255))
-        text_rect = text_surface.get_rect(center=(self.width_btn // 2, self.text_y))
+        text_rect = text_surface.get_rect(center=(self.surface.get_width() // 2, self.text_y))
         self.surface.blit(text_surface, text_rect)
 
         self.volume_slider.draw(self.surface)
 
-        for event in pg.event.get():
-            if self.back_button.is_hovered and \
-                    event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                self.current_window = "Settings"
+        keys = pg.mouse.get_pressed()
+        if keys[0] and self.back_button.is_hovered:
+            self.fade()
+            self.current_window = "Settings"
 
-            for btn in [self.audio_music_button, self.audio_sound_button, self.back_button, self.volume_slider]:
-                btn.handle_event(event)
+        for btn in [self.audio_music_button, self.audio_sound_button, self.back_button]:
+            btn.handle_event(keys[0])
+
+        self.volume_slider.handle_event(keys[0], pg.mouse.get_pos())
 
         for btn in [self.audio_button, self.back_button]:
             btn.check_hover(pg.mouse.get_pos())

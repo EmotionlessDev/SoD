@@ -38,7 +38,8 @@ class Button:
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
     def handle_event(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.is_hovered:
+        if event and self.is_hovered:
+
             if self.sound:
                 self.sound.play()
             pg.event.post(pg.event.Event(pg.USEREVENT, button=self))
