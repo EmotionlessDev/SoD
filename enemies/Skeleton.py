@@ -52,7 +52,22 @@ class Skeleton(pygame.sprite.Sprite):
                 if int(self.speed) == 1:
                     self.speed = 0
 
-    def move_to(self, target: tuple):
+    def random_move_gen(self, obj_collisions):
+        pos_x = self.rect.x
+        pos_y = self.rect.y
+        if self in obj_collisions:
+            for obj in obj_collisions[self]:
+                pos_x = random.randint(obj.rect.left, obj.rect.right)
+        return (pos_x, pos_y)
+
+    def on_ground(self, x, y, blocks_group):
+        rect_check = pygame.Rect(x, y, 1, 100)
+        for ground in blocks_group:
+            if rect_check.colliderect(ground.rect):
+                return True
+        return False
+
+    def move_to(self, target: tuple, blocks_group):
         pos_x = target[0]
         pos_y = target[1]
         if self.move_delay > 0:
@@ -67,7 +82,8 @@ class Skeleton(pygame.sprite.Sprite):
         elif self.rect.x > pos_x:
             self.speed += 0.5
             self.walking = False
-            self.rect.x -= int(self.speed)
+            if self.on_ground(self.rect.x - self.speed - 50, self.rect.y, blocks_group):
+                self.rect.x -= int(self.speed)
             if int(self.speed) == 1:
                 self.speed = 0
         elif self.rect.x == pos_x:
@@ -139,6 +155,8 @@ class Skeleton(pygame.sprite.Sprite):
         self.enemy_attack_index += 0.1
         if self.enemy_attack_index < len(self.enemy_attack):
             self.image = self.enemy_attack[int(self.enemy_attack_index)]
+            if not self.walking:
+                self.image = pygame.transform.flip(self.image, True, False)
         else:
             self.enemy_attack_index = 0
 
@@ -158,18 +176,22 @@ class Skeleton(pygame.sprite.Sprite):
 
     #   self.rect.x += self.target.sprite.scroll
 
-    def update(self, ground_collisions):
+    def update(self, ground_collisions, blocks_group):
         self.apply_gravity(ground_collisions)
         self.scroll()
-        # if target in radius
+        # if target in attack radius
         if self.in_attack_radius():
             self.animate_attack()
             self.attack()
+        # if target in visibility radius
         elif self.in_visibility_radius():
             if self.dist_to_target_x() > 0:
                 self.animate_move()
-                self.move_to((self.target.sprite.rect.x, self.target.sprite.rect.y))
+                self.move_to(
+                    (self.target.sprite.rect.x, self.target.sprite.rect.y), blocks_group
+                )
             else:
                 self.animate_idle()
         else:
-            pass
+            self.animate_move()
+            # self.move_to(self.random_move_gen(ground_collisions))
