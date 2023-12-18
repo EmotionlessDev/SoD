@@ -14,13 +14,9 @@ class VolumeSlider:
         self.slider_rect = pygame.Rect(self.rect.left + int(self.value * width) - 5, self.rect.top, 10, self.height)
 
     def handle_event(self, event, pos):
-        # if event == pygame.MOUSEBUTTONDOWN and event.button == 1:
         if event:
             if self.rect.collidepoint(pos):
                 self.update_value(pos)
-
-        # elif event == pygame.MOUSEMOTION and event.buttons[0]:
-        #     self.update_value(event.pos)
 
     def update_value(self, mouse_pos):
         x = max(self.rect.left, min(self.rect.right, mouse_pos[0]))
