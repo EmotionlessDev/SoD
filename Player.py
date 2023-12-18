@@ -5,7 +5,7 @@ pg.init()
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width, height, scroll):
+    def __init__(self, image_name, frame_count, x, y, width, height):
         super().__init__(image_name, frame_count, x, y, width, height)
         self.player_gravity = 0
         self.player_terminal_velocity = 10
