@@ -46,6 +46,10 @@ class Menu:
                                          width_btn, height_btn,
                                          "Настройки звуковых эффектов", r"menu/button_img.png",
                                          r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+        self.continue_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150,
+                                      width_btn, height_btn,
+                                      "Продолжить", r"menu/button_img.png",
+                                      r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
         self.volume_slider = VolumeSlider(self.surface.get_width() // 2, 250, 250, 40)
 
     def fade(self):
@@ -75,6 +79,7 @@ class Menu:
         if keys[0] and self.start_button.is_hovered:
             self.fade()
             self.playing = True
+            self.current_window = "Pause"
 
         if keys[0] and self.settings_button.is_hovered:
             self.fade()
@@ -133,6 +138,27 @@ class Menu:
             btn.check_hover(pg.mouse.get_pos())
             btn.draw(self.surface)
 
+    def pause_menu(self):
+        text_surface = self.menu_font.render("Pause", True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.surface.get_width() // 2, self.text_y))
+        self.surface.blit(text_surface, text_rect)
+
+        keys = pg.mouse.get_pressed()
+        if keys[0] and self.continue_button.is_hovered:
+            self.fade()
+            self.playing = True
+
+        if keys[0] and self.exit_button.is_hovered:
+            self.fade()
+            sys.exit()
+
+        for btn in [self.continue_button, self.exit_button]:
+            btn.handle_event(keys[0])
+
+        for btn in [self.continue_button, self.exit_button]:
+            btn.check_hover(pg.mouse.get_pos())
+            btn.draw(self.surface)
+
     def menu_selection(self):
         if self.current_window == "Start":
             self.start_menu()
@@ -142,6 +168,9 @@ class Menu:
 
         if self.current_window == "Audio":
             self.audio_menu()
+
+        if self.current_window == "Pause":
+            self.pause_menu()
 
     def draw(self):
         self.surface.blit(self.bg_image, (0, 0))

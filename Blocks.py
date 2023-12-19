@@ -41,4 +41,3 @@ class Block(pg.sprite.Sprite):
         self.draw(surface)
         self.rect.move_ip(x, 0)
         self.position = self.rect.x, self.rect.y
-

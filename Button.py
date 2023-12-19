@@ -39,7 +39,6 @@ class Button:
 
     def handle_event(self, event):
         if event and self.is_hovered:
-
             if self.sound:
                 self.sound.play()
             pg.event.post(pg.event.Event(pg.USEREVENT, button=self))
