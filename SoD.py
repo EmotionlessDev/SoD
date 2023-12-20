@@ -5,16 +5,21 @@ from Blocks import Block
 from Constants import *
 from Player import Player
 from Menu import Menu
+from Clouds import create_cloud
 from import_sprite import import_sprite  # function for importion sprite in dir
 from enemies.Skeleton import Skeleton  # Skeleton class
-
-
 pg.init()
+pg.time.set_timer(pg.USEREVENT + 1, 3000)
 
 pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
 
 world = World(world_map, world_decoration, tile_size)
 sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
+
+clouds = pg.sprite.Group()
+create_cloud(clouds, virtual_surface)
+create_cloud(clouds, virtual_surface)
+create_cloud(clouds, virtual_surface)
 
 player = pg.sprite.GroupSingle()
 player.add(
@@ -50,10 +55,12 @@ while play:
             sys.exit()
         if event.type == pg.VIDEORESIZE:
             screen_size = event.size  # регистрация изменения окна
-
-        # if event.type == pg.KEYDOWN:
-            # if event.key == pg.K_ESCAPE:
-            #     Menu.fade()
+        if event.type == pg.USEREVENT + 1 and menu.playing:
+            create_cloud(clouds, virtual_surface)
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE and menu.playing:
+                menu.playing = False
+                menu.fade()
 
     scaled_surface = pg.transform.scale(virtual_surface, screen_size)
     screen.blit(scaled_surface, (0, 0))
@@ -61,6 +68,8 @@ while play:
     if menu.playing:
         # sky
         sky.draw(virtual_surface)
+        # clouds
+        clouds.update()
         # world
         decoration_group.update(player.sprite.scroll, virtual_surface)
         blocks_group.update(player.sprite.scroll, virtual_surface)
