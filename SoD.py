@@ -33,7 +33,7 @@ player.add(
     )
 )
 
-world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
+world.world_generation(pictures_bl, pictures_dec, blocks_group, decoration_group)
 
 # Create test skeleton
 skeleton = Skeleton(

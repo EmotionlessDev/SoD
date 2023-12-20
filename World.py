@@ -9,20 +9,20 @@ class World:
         self.tile_size = tile_size
         self.decor = decor
 
-    def world_generation(self, surface, pictures, group_spr, group_texture):
+    def world_generation(self, pictures_bl, pictures_dec, group_spr, group_texture):
         for row in range(len(self.world_map)):
             for col in range(len(self.world_map[row])):
                 x = col * self.tile_size
                 y = row * self.tile_size
 
                 if self.world_map[row][col] != " ":
-                    group_spr.add(Block(pictures[self.world_map[row][col]][0],
+                    group_spr.add(Block(pictures_bl[self.world_map[row][col]][0],
                                         (self.tile_size, self.tile_size), (x, y),
-                                        pictures[self.world_map[row][col]][1],
-                                        pictures[self.world_map[row][col]][2]))
+                                        pictures_bl[self.world_map[row][col]][1],
+                                        pictures_bl[self.world_map[row][col]][2]))
 
                 if self.decor[row][col] != " ":
-                    group_texture.add(Block(pictures[self.decor[row][col]][0],
+                    group_texture.add(Block(pictures_dec[self.decor[row][col]][0],
                                             (self.tile_size, self.tile_size), (x, y),
-                                            pictures[self.decor[row][col]][1],
-                                            pictures[self.decor[row][col]][2]))
+                                            pictures_dec[self.decor[row][col]][1],
+                                            pictures_dec[self.decor[row][col]][2]))
