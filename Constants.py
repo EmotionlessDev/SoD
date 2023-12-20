@@ -1,4 +1,5 @@
 import pygame as pg
+from secondary_functions import create_barriers
 pg.init()
 
 FPS = 60
@@ -16,6 +17,7 @@ tile_size = 50
 
 blocks_group = pg.sprite.Group()
 decoration_group = pg.sprite.Group()
+system_group = pg.sprite.Group()
 
 all_world = pg.sprite.Group(blocks_group, decoration_group)
 
@@ -45,6 +47,9 @@ pictures_dec = {
     "l": [r"textures/buttons/lmb.png", 1, (0, 0)],
     "»": [r"textures/buttons/w.png", 1, (0, 0)]}
 
+system_blocks = {
+    "0": [r"menu/hovered_button.jpg", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers]
+
 world_map = [
     "                                                                                                                                                                                                                                              ",
     "                                                                                                                                                                                                                                              ",
@@ -71,6 +76,21 @@ world_decoration = [
     "                             t                t      t                               S        t                                                                  t        t           S                                                       ",
     "                                    g b                                                                                                                                                                                                       ",
     "                 ggg  g b  gggg   b            gg     g gg   b    FFFFwwwwwwwwwwwwwwwFFFF ggg    b  g b  gggb      gggg FFFwwwwwwwwwwwwwwwwww    FFFFFFFFFFFFF      b        FwwwwwwwF   b                  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww   ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              "
+]
+
+world_system = [
+    "                                                                                                                                                                                                               0                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
+    "                                                                                                                                                                                                                                              ",
     "                                                                                                                                                                                                                                              ",
     "                                                                                                                                                                                                                                              "
 ]
