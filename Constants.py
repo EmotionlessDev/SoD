@@ -49,7 +49,6 @@ pictures_dec = {
 
 system_blocks = {
     "0": [r"menu/hovered_button.jpg", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers]
-}
 
 world_map = [
     "                                                                                                                                                                                                                                              ",
