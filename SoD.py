@@ -4,7 +4,7 @@ from World import World
 from Blocks import Block
 from Constants import *
 from Player import Player
-from import_sprite import import_sprite  # function for importion sprite in dir
+from import_sprite import import_sprite  # function for import sprite in dir
 from enemies.Skeleton import Skeleton  # Skeleton class
 
 pg.init()
@@ -73,6 +73,6 @@ while play:
     )
     skeleton_group.draw(virtual_surface)
     for skeleton in skeleton_group:
-        skeleton.update(ground_collisions_enemies)
+        skeleton.update(ground_collisions_enemies, blocks_group)
     pg.display.flip()
     clock.tick(FPS)

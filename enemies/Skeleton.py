@@ -24,9 +24,12 @@ class Skeleton(pygame.sprite.Sprite):
         self.gravity = 10
         self.walking = None  # True - Right, False - Left, None - not walking
         self.move_delay = 0
-        self.enemy_attack_radius = 70
-        self.enemy_visibility_radius = 300
+        self.enemy_attack_radius = 39
+        self.enemy_visibility_radius = 50
         self.target = target
+        self.action_type = None
+        self.idle_timer = 0
+        self.target_to_move = (None, None)
 
     def movement(self):
         if self.move == 0 and self.move_delay == 0:
@@ -60,13 +63,14 @@ class Skeleton(pygame.sprite.Sprite):
                 pos_x = random.randint(obj.rect.left, obj.rect.right)
         return (pos_x, pos_y)
 
-    def on_ground(self, x, y, blocks_group):
-        rect_check = pygame.Rect(x, y, 1, 100)
+    def on_ground(self, x, delta, blocks_group):
+        rect_check = pygame.Rect(x[0] + int(delta), x[1], 1, 2)
         for ground in blocks_group:
             if rect_check.colliderect(ground.rect):
                 return True
         return False
 
+    # need fixes
     def move_to(self, target: tuple, blocks_group):
         pos_x = target[0]
         pos_y = target[1]
@@ -76,14 +80,23 @@ class Skeleton(pygame.sprite.Sprite):
         elif self.rect.x < pos_x:
             self.speed += 0.5
             self.walking = True
-            self.rect.x += int(self.speed)
+            if self.on_ground(self.rect.bottomright, self.speed, blocks_group):
+                self.animate_move()
+                self.rect.x += int(self.speed)
+            else:
+                self.walking = None
+                self.animate_idle()
             if int(self.speed) == 1:
                 self.speed = 0
         elif self.rect.x > pos_x:
             self.speed += 0.5
             self.walking = False
-            if self.on_ground(self.rect.x - self.speed - 50, self.rect.y, blocks_group):
+            if self.on_ground(self.rect.bottomleft, self.speed, blocks_group):
+                self.animate_move()
                 self.rect.x -= int(self.speed)
+            else:
+                self.walking = None
+                self.animate_idle()
             if int(self.speed) == 1:
                 self.speed = 0
         elif self.rect.x == pos_x:
@@ -102,14 +115,15 @@ class Skeleton(pygame.sprite.Sprite):
         else:
             return False
 
+    # need fixes idk
     def in_attack_radius(self):
-        pos_x = self.rect.x
-        pos_y = self.rect.y
-        pos_target_x = self.target.sprite.rect.x
-        pos_target_y = self.target.sprite.rect.y
+        pos_x = self.rect.centerx
+        pos_y = self.rect.bottom
+        pos_target_x = self.target.sprite.rect.centerx
+        pos_target_y = self.target.sprite.rect.bottom
         if (
-            sqrt((pos_target_x - pos_x) ** 2 + (pos_target_y - pos_y) ** 2)
-            < self.enemy_attack_radius
+            abs(pos_x - pos_target_x) < self.enemy_attack_radius
+            and abs(pos_y - pos_target_y) < self.rect.height
         ):
             return True
         else:
@@ -139,6 +153,8 @@ class Skeleton(pygame.sprite.Sprite):
         self.enemy_idle_index += 0.1
         if self.enemy_idle_index < len(self.enemy_idle):
             self.image = self.enemy_idle[int(self.enemy_idle_index)]
+            if not self.walking:
+                self.image = pygame.transform.flip(self.image, True, False)
         else:
             self.enemy_idle_index = 0
 
@@ -170,28 +186,52 @@ class Skeleton(pygame.sprite.Sprite):
             self.gravity = 10
         self.rect.y += self.gravity
 
+    def logic_in_visibility_radius(self, blocks_group):
+        if self.dist_to_target_x() > 0:
+            self.move_to(
+                (self.target.sprite.rect.x, self.target.sprite.rect.y), blocks_group
+            )
+        else:
+            self.animate_idle()
+
+    def logic_attack(self):
+        self.animate_attack()
+        self.attack()
+
     # Function that leaves the mob in place relative to the world
     def scroll(self):
         self.rect.move_ip(self.target.sprite.scroll, 0)
 
-    #   self.rect.x += self.target.sprite.scroll
-
     def update(self, ground_collisions, blocks_group):
+        # secondary calls
         self.apply_gravity(ground_collisions)
         self.scroll()
         # if target in attack radius
         if self.in_attack_radius():
-            self.animate_attack()
-            self.attack()
+            self.logic_attack()
         # if target in visibility radius
         elif self.in_visibility_radius():
-            if self.dist_to_target_x() > 0:
-                self.animate_move()
-                self.move_to(
-                    (self.target.sprite.rect.x, self.target.sprite.rect.y), blocks_group
-                )
-            else:
-                self.animate_idle()
+            self.logic_in_visibility_radius(blocks_group)
+        # if idle do random things
         else:
-            self.animate_move()
-            # self.move_to(self.random_move_gen(ground_collisions))
+            if self.action_type == None:
+                self.action_type = random.choice(["idle", "move"])
+                if self.action_type == "idle":
+                    self.idle_timer = random.randint(20, 50)
+                if self.action_type == "move":
+                    self.target_to_move = (
+                        random.randint(self.rect.x - 30, self.rect.x + 40),
+                        random.randint(self.rect.y - 100, self.rect.y + 100),
+                    )
+            if self.action_type == "idle":
+                if self.idle_timer != 0:
+                    self.animate_idle()
+                    self.idle_timer -= 1
+                else:
+                    self.animate_idle()
+                    self.action_type = None
+            if self.action_type == "move":
+                self.animate_move()
+                self.move_to(self.target_to_move, blocks_group)
+                if self.walking == None:
+                    self.action_type = None
