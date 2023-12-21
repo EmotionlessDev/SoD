@@ -1,5 +1,6 @@
 import pygame as pg
 from BaseCharacter import BaseCharacter
+
 pg.init()
 
 

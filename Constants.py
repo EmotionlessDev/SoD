@@ -4,9 +4,14 @@ pg.init()
 
 FPS = 60
 
+info = pg.display.Info()
+full_screen_size = (info.current_w, info.current_h)
+is_full_screen = False
+
 width_screen, height_screen = 800, 600
 screen = pg.display.set_mode((width_screen, height_screen), pg.RESIZABLE)
 screen_size = screen.get_size()
+last_size = screen_size
 
 virtual_surface = pg.Surface((width_screen, height_screen))
 clock = pg.time.Clock()
@@ -48,7 +53,8 @@ pictures_dec = {
     "»": [r"textures/buttons/w.png", 1, (0, 0)]}
 
 system_blocks = {
-    "0": [r"menu/hovered_button.jpg", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers]
+    "0": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers]
+}
 
 world_map = [
     "                                                                                                                                                                                                                                              ",
@@ -81,7 +87,7 @@ world_decoration = [
 ]
 
 world_system = [
-    "                                                                                                                                                                                                               0                              ",
+    "                                                                                                                                                                                                                   0                          ",
     "                                                                                                                                                                                                                                              ",
     "                                                                                                                                                                                                                                              ",
     "                                                                                                                                                                                                                                              ",

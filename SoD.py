@@ -56,6 +56,15 @@ while play:
             sys.exit()
         if event.type == pg.VIDEORESIZE:
             screen_size = event.size  # регистрация изменения окна
+        if event.type == pg.KEYDOWN and event.key == pg.K_F12:
+            is_full_screen = not is_full_screen
+            if is_full_screen:
+                last_size = screen_size
+                screen_size = full_screen_size
+                screen = pg.display.set_mode(screen_size, pg.FULLSCREEN)
+            else:
+                screen_size = last_size
+                screen = pg.display.set_mode(screen_size, pg.RESIZABLE)
         if event.type == pg.USEREVENT + 1 and menu.playing:
             create_cloud(clouds, virtual_surface)
         if event.type == pg.KEYDOWN:

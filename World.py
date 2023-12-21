@@ -35,4 +35,5 @@ class World:
                                               pictures_sys[self.system[row][col]][1],
                                               pictures_sys[self.system[row][col]][2],
                                               pictures_sys[self.system[row][col]][3],
-                                              (surface, x, self.tile_size, group_spr)))
+                                              (surface, surface.get_width() // 2 - 3 * self.tile_size,
+                                               self.tile_size, group_spr)))
