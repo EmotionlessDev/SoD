@@ -8,6 +8,7 @@ from Menu import Menu
 from Clouds import create_cloud
 from secondary_functions import import_sprite  # function for importion sprite in dir
 from enemies.Skeleton import Skeleton  # Skeleton class
+
 pg.init()
 pg.time.set_timer(pg.USEREVENT + 1, 3000)
 
@@ -29,12 +30,19 @@ player.add(
         virtual_surface.get_width() // 2,
         virtual_surface.get_height() - 4 * tile_size,
         tile_size,
-        tile_size * 2
+        tile_size * 2,
     )
 )
 
-world.world_generation(pictures_bl, pictures_dec, system_blocks,
-                       blocks_group, decoration_group, system_group, virtual_surface)
+world.world_generation(
+    pictures_bl,
+    pictures_dec,
+    system_blocks,
+    blocks_group,
+    decoration_group,
+    system_group,
+    virtual_surface,
+)
 
 # Create test skeleton
 skeleton = Skeleton(
@@ -75,7 +83,6 @@ while play:
     scaled_surface = pg.transform.scale(virtual_surface, screen_size)
     screen.blit(scaled_surface, (0, 0))
 
-
     if menu.playing:
         # sky
         sky.draw(virtual_surface)
@@ -91,8 +98,12 @@ while play:
         # player
         player.update(virtual_surface, ground_collisions, script_collisions)
         # Enemies
+        ground_collisions_enemies = pg.sprite.groupcollide(
+            skeleton_group, blocks_group, False, False
+        )
         skeleton_group.draw(virtual_surface)
-        skeleton_group.update()
+        for skeleton in skeleton_group:
+            skeleton.update(ground_collisions_enemies, blocks_group)
 
     else:
         menu.draw()
