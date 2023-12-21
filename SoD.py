@@ -4,24 +4,23 @@ from World import World
 from Blocks import Block
 from Constants import *
 from Player import Player
-from import_sprite import import_sprite  # function for import sprite in dir
+from Menu import Menu
+from Clouds import create_cloud
+from secondary_functions import import_sprite  # function for importion sprite in dir
 from enemies.Skeleton import Skeleton  # Skeleton class
-
 pg.init()
+pg.time.set_timer(pg.USEREVENT + 1, 3000)
 
 pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
 
-world = World(world_map, world_decoration, tile_size)
+world = World(world_map, world_decoration, world_system, tile_size)
 sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
-player = Player(
-    r"esev-sheet(main animation).png",
-    14,
-    virtual_surface.get_width() // 2,
-    virtual_surface.get_height() - 4 * tile_size,
-    tile_size,
-    tile_size * 2,
-    0,
-)
+
+clouds = pg.sprite.Group()
+create_cloud(clouds, virtual_surface)
+create_cloud(clouds, virtual_surface)
+create_cloud(clouds, virtual_surface)
+
 player = pg.sprite.GroupSingle()
 player.add(
     Player(
@@ -30,12 +29,12 @@ player.add(
         virtual_surface.get_width() // 2,
         virtual_surface.get_height() - 4 * tile_size,
         tile_size,
-        tile_size * 2,
-        0,
+        tile_size * 2
     )
 )
 
-world.world_generation(virtual_surface, pictures, blocks_group, decoration_group)
+world.world_generation(pictures_bl, pictures_dec, system_blocks,
+                       blocks_group, decoration_group, system_group, virtual_surface)
 
 # Create test skeleton
 skeleton = Skeleton(
@@ -49,30 +48,54 @@ skeleton = Skeleton(
 skeleton_group = pg.sprite.Group()
 skeleton_group.add(skeleton)
 
+menu = Menu(r"menu/background_menu.jpg", font, virtual_surface, 40, 241, 71)
+
 while play:
     for event in pg.event.get():
         if event.type == pg.QUIT:  # нажатие на "х"
             sys.exit()
         if event.type == pg.VIDEORESIZE:
             screen_size = event.size  # регистрация изменения окна
+        if event.type == pg.KEYDOWN and event.key == pg.K_F12:
+            is_full_screen = not is_full_screen
+            if is_full_screen:
+                last_size = screen_size
+                screen_size = full_screen_size
+                screen = pg.display.set_mode(screen_size, pg.FULLSCREEN)
+            else:
+                screen_size = last_size
+                screen = pg.display.set_mode(screen_size, pg.RESIZABLE)
+        if event.type == pg.USEREVENT + 1 and menu.playing:
+            create_cloud(clouds, virtual_surface)
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE and menu.playing:
+                menu.playing = False
+                menu.fade()
 
     scaled_surface = pg.transform.scale(virtual_surface, screen_size)
     screen.blit(scaled_surface, (0, 0))
-    # sky
-    sky.draw(virtual_surface)
-    # decorations
-    decoration_group.update(player.sprite.scroll, virtual_surface)
-    blocks_group.update(player.sprite.scroll, virtual_surface)
-    # ground
-    ground_collisions = pg.sprite.spritecollide(player.sprite, blocks_group, False)
-    # player
-    player.update(virtual_surface, ground_collisions)
-    # Enemies
-    ground_collisions_enemies = pg.sprite.groupcollide(
-        skeleton_group, blocks_group, False, False
-    )
-    skeleton_group.draw(virtual_surface)
-    for skeleton in skeleton_group:
-        skeleton.update(ground_collisions_enemies, blocks_group)
+
+
+    if menu.playing:
+        # sky
+        sky.draw(virtual_surface)
+        # clouds
+        clouds.update()
+        # world
+        decoration_group.update(player.sprite.scroll, virtual_surface)
+        blocks_group.update(player.sprite.scroll, virtual_surface)
+        system_group.update(player.sprite.scroll, virtual_surface)
+        # ground
+        ground_collisions = pg.sprite.spritecollide(player.sprite, blocks_group, False)
+        script_collisions = pg.sprite.spritecollide(player.sprite, system_group, True)
+        # player
+        player.update(virtual_surface, ground_collisions, script_collisions)
+        # Enemies
+        skeleton_group.draw(virtual_surface)
+        skeleton_group.update()
+
+    else:
+        menu.draw()
+
     pg.display.flip()
     clock.tick(FPS)

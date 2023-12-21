@@ -1,11 +1,12 @@
 import pygame as pg
 from BaseCharacter import BaseCharacter
+
 pg.init()
 
 
 class Player(BaseCharacter):
 
-    def __init__(self, image_name, frame_count, x, y, width, height, scroll):
+    def __init__(self, image_name, frame_count, x, y, width, height):
         super().__init__(image_name, frame_count, x, y, width, height)
         self.player_gravity = 0
         self.player_terminal_velocity = 10
@@ -52,6 +53,11 @@ class Player(BaseCharacter):
             self.player_gravity += 1
         self.y += self.player_gravity
 
+    def script_playing(self, script_collisions):
+        if script_collisions:
+            for script in script_collisions:
+                script.command(*script.args)
+
     def controls(self):
         bt = pg.key.get_pressed()
         if bt[pg.K_SPACE] and self.on_ground:
@@ -66,9 +72,10 @@ class Player(BaseCharacter):
         if not (bt[pg.K_d] or bt[pg.K_a] or bt[pg.K_w]):
             self.scroll = 0
 
-    def update(self, surface, ground_collisions):
+    def update(self, surface, ground_collisions, script_collisions):
         self.draw(surface)
         self.controls()
         self.apply_gravity(ground_collisions)
+        self.script_playing(script_collisions)
 
         self.frame = (self.frame + 0.2) % self.frame_count

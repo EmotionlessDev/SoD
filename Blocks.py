@@ -20,8 +20,9 @@ class Block(pg.sprite.Sprite):
         self.image = pg.transform.scale(self.image, self.size)
         self.rect = self.image.get_rect(topleft=self.position)
 
-        self.last_update = pg.time.get_ticks()
-        self.frame_rate = 100
+        if self.columns > 1:
+            self.last_update = pg.time.get_ticks()
+            self.frame_rate = 100
 
     def animation(self):
         if self.columns > 1:
@@ -41,4 +42,3 @@ class Block(pg.sprite.Sprite):
         self.draw(surface)
         self.rect.move_ip(x, 0)
         self.position = self.rect.x, self.rect.y
-
