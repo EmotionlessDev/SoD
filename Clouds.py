@@ -14,13 +14,13 @@ class Cloud(pg.sprite.Sprite):
 
         self.rect.x = x
         self.rect.y = y
-        self.speed = random.randint(1, 3)
+        self.speed = random.randint(1, 2)
 
         self.add(group)
 
     def update(self):
         if self.rect.x < self.surface.get_width():
-            self.rect.x += self.speed + 0.2
+            self.rect.x += self.speed + 0.1
             self.surface.blit(self.image, self.rect)
         else:
             self.kill()
