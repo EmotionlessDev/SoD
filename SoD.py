@@ -75,6 +75,7 @@ while play:
     scaled_surface = pg.transform.scale(virtual_surface, screen_size)
     screen.blit(scaled_surface, (0, 0))
 
+
     if menu.playing:
         # sky
         sky.draw(virtual_surface)
