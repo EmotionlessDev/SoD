@@ -37,6 +37,8 @@ skeleton = Skeleton(
     player,
     100,
     player.sprite.rect.y,
+    tile_size - 10,
+    tile_size * 2 - 20,
 )
 enemies_group.add(skeleton)
 
@@ -85,7 +87,7 @@ while play:
             enemies_group, blocks_group, False, False
         )
         enemies_group.draw(virtual_surface)
-        enemies_group.update(ground_collisions_enemies, blocks_group, virtual_surface)
+        enemies_group.update(ground_collisions_enemies, blocks_group, virtual_surface, menu)
 
     else:
         menu.draw()

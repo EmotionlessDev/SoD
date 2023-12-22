@@ -44,5 +44,5 @@ class World:
                     else:
                         pictures_scr[self.script[row][col]][1].add(Skeleton(
                                                                             *pictures_scr[self.script[row][col]][0],
-                                                                            x, y
+                                                                            x, y, self.tile_size, self.tile_size * 2
                         ))

@@ -2,7 +2,8 @@ import math
 import pygame
 import random
 from math import sqrt, ceil
-
+import menu
+from Menu import Menu
 
 class Skeleton(pygame.sprite.Sprite):
 
@@ -14,13 +15,19 @@ class Skeleton(pygame.sprite.Sprite):
         target,
         x: int,
         y: int,
+        width: int,
+        height: int,
         hp: int = 100,
         damage: int = 15,
         speed: float = 0.5,
         attack_radius: int = 39,
         visibility_radius: int = 350,
+
+
     ):
         super().__init__()
+        self.width = width
+        self.height = height
         self.enemy_idle = sprites_idle
         self.enemy_attack = sprites_attack
         self.enemy_move = sprites_move
@@ -31,7 +38,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.enemy_attack_index = 0
         self.enemy_move_index = 0
         self.image = self.enemy_idle[self.enemy_idle_index]
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = pygame.transform.scale(self.image , (self.width , self.height)).get_rect(topleft=(x, y))
         self.speed = 0
         self.speed_change = speed
         self.damage = damage
@@ -48,6 +55,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.hp = hp
         self.start_hp = hp
         self.last_attack_tick = False
+        self.menu = ''
 
     #### ATTACK LOGIC FUNCTION START ####
     def attack(self):
@@ -57,7 +65,11 @@ class Skeleton(pygame.sprite.Sprite):
 
             if self.target.sprite.hp <= 0:
 
-                self.target.kill()
+                # self.target.kill()
+
+                ####OPPEN MENU####
+                self.menu.playing = False
+                self.menu.current_window = "Start"
 
 
     #### ATTACK LOGIC FUNCTION END ####
@@ -126,6 +138,7 @@ class Skeleton(pygame.sprite.Sprite):
         elif self.rect.x == pos_x:
             self.walking = None
 
+        self.image = pygame.transform.scale(self.image, (self.width , self.height))
     #### MOTE TO TARGET FUNCTION END ####
 
     #### IN RADIUS FUNCTIONS START ####
@@ -208,6 +221,9 @@ class Skeleton(pygame.sprite.Sprite):
         else:
             self.enemy_attack_index = 0
 
+        self.image = pygame.transform.scale(self.image, (self.width + 40, self.height + 25))
+
+
     #### FUNCTIONS FOR ANIMATIONS END ####
     # ground_collisions: dict ()
     def apply_gravity(self, ground_collisions: dict):
@@ -258,7 +274,12 @@ class Skeleton(pygame.sprite.Sprite):
             if self.walking == None:
                 self.action_type = None
 
+
     #### LOGIC FUNCTIONS END ####
+    #### SCALE END ####
+    def scale(self, img):
+        pass
+    #### SCALE END ####
 
     #### SCROLL FUNCTION START ####
     def scroll(self):
@@ -269,12 +290,15 @@ class Skeleton(pygame.sprite.Sprite):
     #### UPDATE BEGIN ####
     # ground_collisions: dict with collisions
     # blocks_group: list (list of all ground blocks in game)
-    def update(self, ground_collisions: dict, blocks_group: list, screen):
+    def update(self, ground_collisions: dict, blocks_group: list, screen, menu: object):
+
         # secondary calls
         self.draw_hp_bar(screen)
         self.apply_gravity(ground_collisions)
         self.scroll()
         self.draw_rect_around(screen)
+
+
         # if target in attack radius
         if self.in_attack_radius():
             self.logic_attack()
@@ -284,5 +308,8 @@ class Skeleton(pygame.sprite.Sprite):
         # if idle do random things
         else:
             self.logic_idle(blocks_group)
+
+        self.menu = menu
+
 
     #### UPDATE END ####
