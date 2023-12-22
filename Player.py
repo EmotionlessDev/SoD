@@ -14,6 +14,7 @@ class Player(BaseCharacter):
         self.jump_y = 0
         self.is_jumped = False
         self.scroll = 0
+        self.in_castle = False
 
         self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_increase_interval_ticks = 0

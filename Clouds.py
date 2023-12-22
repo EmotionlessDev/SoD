@@ -36,4 +36,5 @@ def create_cloud(group, surface):
     x = 0 - size_list[index][0]
     y = random.randint(0, surface.get_height() // 4)
 
+    # Random cloud creating
     return Cloud(image_list[index], size_list[index], surface, x, y, group)
