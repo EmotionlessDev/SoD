@@ -3,36 +3,21 @@ import sys
 from World import World
 from Blocks import Block
 from Constants import *
-from Player import Player
 from Menu import Menu
 from Clouds import create_cloud
-from secondary_functions import import_sprite  # function for importion sprite in dir
+from Maps import *
 from enemies.Skeleton import Skeleton  # Skeleton class
 
 pg.init()
 pg.time.set_timer(pg.USEREVENT + 1, 3000)
 
-pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
-
-world = World(world_map, world_decoration, world_system, tile_size)
+world = World(village_map, village_decoration, village_script, tile_size)
 sky = Block(r"textures/world/sky.png", screen_size, (0, 0), 1, (0, 0))
 
 clouds = pg.sprite.Group()
 create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
-
-player = pg.sprite.GroupSingle()
-player.add(
-    Player(
-                virtual_surface.get_width() // 2,
-                virtual_surface.get_height() - 4 * tile_size,
-                tile_size,
-                tile_size * 2,
-    )
-)
-
-
 
 world.world_generation(
     pictures_bl,
@@ -49,12 +34,11 @@ skeleton = Skeleton(
     import_sprite("./characters/Skeleton/Idle/"),
     import_sprite("./characters/Skeleton/Attack/"),
     import_sprite("./characters/Skeleton/Move/"),
+    player,
     100,
     player.sprite.rect.y,
-    player,
 )
-skeleton_group = pg.sprite.Group()
-skeleton_group.add(skeleton)
+enemies_group.add(skeleton)
 
 menu = Menu(r"menu/background_menu.jpg", font, virtual_surface, 40, 241, 71)
 
@@ -99,11 +83,10 @@ while play:
         player.update(virtual_surface, ground_collisions, script_collisions)
         # Enemies
         ground_collisions_enemies = pg.sprite.groupcollide(
-            skeleton_group, blocks_group, False, False
+            enemies_group, blocks_group, False, False
         )
-        skeleton_group.draw(virtual_surface)
-        for skeleton in skeleton_group:
-            skeleton.update(ground_collisions_enemies, blocks_group)
+        enemies_group.draw(virtual_surface)
+        enemies_group.update(ground_collisions_enemies, blocks_group)
 
     else:
         menu.draw()

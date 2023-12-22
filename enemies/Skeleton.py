@@ -5,7 +5,7 @@ from math import sqrt
 
 class Skeleton(pygame.sprite.Sprite):
 
-    def __init__(self, sprites_idle, sprites_attack, sprites_move, x, y, target, width = 50, height = 100):
+    def __init__(self, sprites_idle, sprites_attack, sprites_move, target, x, y):
         super().__init__()
         self.width = width
         self.height = height
@@ -19,7 +19,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.enemy_attack_index = 0
         self.enemy_move_index = 0
         self.image = self.enemy_idle[self.enemy_idle_index]
-        self.rect = self.image.get_rect(midbottom=(x, y))
+        self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = 0
         self.damage = 1
         self.move = 0
