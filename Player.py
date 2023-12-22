@@ -4,29 +4,23 @@ pg.init()
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, hp = 100):
         pg.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.dx = x
         self.dy = y
         self.scroll = 0
-
         self.cur_animation = "base"
-
-
         self.float_frame = 0
         self.cur_frame = 0
-
         self.rect = pg.Rect(x, y, width, height)
         self.last_direction = 'right'
         self.direction = "right"
-
         self.direction_vector = pg.math.Vector2(0, 0)
-        # -----------------
-
         self.animations = {"base": [], 'attack': []}
         self.settings_frame = {"base": (14, 0.2), 'attack': (10, 0.3)}  # frames count / speed
+        self.is_attacking = False
 
         self.w_base = pg.image.load(r"characters/Player/base/hero_base_1.png").convert_alpha().get_width()
         self.h_base = pg.image.load(r"characters/Player/base/hero_base_1.png").convert_alpha().get_height()
@@ -52,9 +46,9 @@ class Player(pg.sprite.Sprite):
         self.jump_value = 25
         self.blocks_group = []
         self.direction = pg.math.Vector2(0, 0)
-        self.buffer_collision = 15
+        self.buffer_collision = 25
         self.on_ground = False
-
+        self.hp = hp
 
     def walk(self, direction):
         self.direction = direction
@@ -74,23 +68,24 @@ class Player(pg.sprite.Sprite):
             self.animation("attack")
         self.__last_attack_ticks = pg.time.get_ticks()
 
-
+    # def detected_target_attack:
+    #     for
 
     def horizontal_movement_collision(self, blocks_group):
 
         for block in blocks_group:
             # relative block right
-            point_right_top = (block.rect.x + block.rect.width + self.buffer_collision + self.scroll, block.rect.y + 20)
-            point_right_center = (block.rect.x + block.rect.width + self.buffer_collision + self.scroll, block.rect.y + block.rect.height // 2)
-            point_right_bottom = (block.rect.x + block.rect.width + self.buffer_collision + self.scroll, block.rect.y + block.rect.height - 20)
+            point_right_top = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + 20)
+            point_right_center = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + block.rect.height // 2)
+            point_right_bottom = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + block.rect.height - 20)
 
             if (self.rect.collidepoint(point_right_top) or self.rect.collidepoint(
                     point_right_center) or self.rect.collidepoint(point_right_bottom)) and self.direction == 'left':
                 self.direction_vector.x = 0
             # relative block left
-            point_left_top = (block.rect.x - self.buffer_collision + self.scroll, block.rect.y + 20)
-            point_left_center = (block.rect.x - self.buffer_collision + self.scroll, block.rect.y + block.rect.height // 2)
-            point_left_bottom = (block.rect.x - self.buffer_collision + self.scroll, block.rect.y + block.rect.height - 20)
+            point_left_top = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + 20)
+            point_left_center = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height // 2)
+            point_left_bottom = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height - 20)
 
             if (self.rect.collidepoint(point_left_top) or self.rect.collidepoint(
                     point_left_center) or self.rect.collidepoint(point_left_bottom)) and self.direction == 'right':
@@ -198,6 +193,9 @@ class Player(pg.sprite.Sprite):
         # не менять порядок снизу!
         self.vertical_movement_collision(blocks_group)
         self.controls()
+
+        self.scroll = -self.direction_vector.x
+
         self.horizontal_movement_collision(blocks_group)
         self.dx += self.direction_vector.x
         self.dy += self.direction_vector.y
