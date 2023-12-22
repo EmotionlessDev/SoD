@@ -1,5 +1,7 @@
 import pygame as pg
-from secondary_functions import create_barriers
+from script_functions import *
+from import_sprite import import_sprite  # function for importion sprite in dir
+from Player import Player
 pg.init()
 
 FPS = 60
@@ -13,6 +15,9 @@ screen = pg.display.set_mode((width_screen, height_screen), pg.RESIZABLE)
 screen_size = screen.get_size()
 last_size = screen_size
 
+pg.display.set_caption("Shadow of Desolation")  # создание заголовка окна
+pg.display.set_icon(pg.image.load(r"characters/esev-icon.png"))
+
 virtual_surface = pg.Surface((width_screen, height_screen))
 clock = pg.time.Clock()
 
@@ -24,7 +29,19 @@ blocks_group = pg.sprite.Group()
 decoration_group = pg.sprite.Group()
 system_group = pg.sprite.Group()
 
-all_world = pg.sprite.Group(blocks_group, decoration_group)
+player = pg.sprite.GroupSingle()
+player.add(
+    Player(
+        r"esev-sheet(main animation).png",
+        14,
+        virtual_surface.get_width() // 2,
+        virtual_surface.get_height() - 4 * tile_size,
+        tile_size,
+        tile_size * 2,
+    )
+)
+
+enemies_group = pg.sprite.Group()
 
 pictures_bl = {
     "G": [r"textures/world/Blocks/ground.png", 1, (0, 0)],
@@ -53,53 +70,21 @@ pictures_dec = {
     "»": [r"textures/buttons/w.png", 1, (0, 0)]}
 
 system_blocks = {
-    "0": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers]
+    "0": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()), create_barriers],
+    "1": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()), teleport],
+    "P": [[import_sprite(r"./characters/Peasant/Idle/"),
+          import_sprite(r"./characters/Peasant/Attack/"),
+          import_sprite(r"./characters/Peasant/Move/"),
+          player], enemies_group],
+    "D": [[import_sprite(r"./characters/Dog/Idle/"),
+          import_sprite(r"./characters/Dog/Attack/"),
+          import_sprite(r"./characters/Dog/Move/"),
+          player], enemies_group],
+    "F": [[import_sprite(r"./characters/Farmer/Idle/"),
+          import_sprite(r"./characters/Farmer/Attack/"),
+          import_sprite(r"./characters/Farmer/Move/"),
+          player], enemies_group]
 }
-
-world_map = [
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "       P                                                                                                                                                                                                                                      ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                    DDDDDD                                                                                                                                                                                                    ",
-    "GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
-]
-
-world_decoration = [
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "         ← →                     ↑     T                   T      l                      »            T       T                                       T                                                                                       ",
-    "                                                               h                                                                              h              h       h                       h                                                ",
-    "                             t                t      t                               S        t                                                                  t        t           S                                                       ",
-    "                                    g b                                                                                                                                                                                                       ",
-    "                 ggg  g b  gggg   b            gg     g gg   b    FFFFwwwwwwwwwwwwwwwFFFF ggg    b  g b  gggb      gggg FFFwwwwwwwwwwwwwwwwww    FFFFFFFFFFFFF      b        FwwwwwwwF   b                  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww   ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              "
-]
-
-world_system = [
-    "                                                                                                                                                                                                                   0                          ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              ",
-    "                                                                                                                                                                                                                                              "
-]
 
 background_music = pg.mixer.music.load(r'sounds/background_music.wav')
 pg.mixer.music.play(-1)

@@ -3,7 +3,7 @@ from Blocks import Block
 pg.init()
 
 
-class SkriptBlock(Block):
+class ScriptBlock(Block):
     def __init__(self, image, size, position, columns, re_size, command, args):
         super().__init__(image, size, position, columns, re_size)
         self.command = command
