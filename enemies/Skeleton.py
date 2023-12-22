@@ -296,7 +296,6 @@ class Skeleton(pygame.sprite.Sprite):
         self.draw_hp_bar(screen)
         self.apply_gravity(ground_collisions)
         self.scroll()
-        self.draw_rect_around(screen)
 
 
         # if target in attack radius

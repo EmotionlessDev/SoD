@@ -38,8 +38,8 @@ class Block(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=self.position)
         surface.blit(self.image, self.rect)
 
-        pg.draw.rect(surface, (255, 255, 255),
-                         self.rect, 2)
+        # pg.draw.rect(surface, (255, 255, 255),
+        #                  self.rect, 2)
 
     def update(self, x, surface):
         self.draw(surface)

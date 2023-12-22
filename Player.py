@@ -60,7 +60,6 @@ class Player(pg.sprite.Sprite):
         bar_y = self.rect.midbottom[1] + 10
         bar_cur = pg.Rect((bar_x - 25, bar_y), (50 * cur_hp / 100, 8))
         pg.draw.rect(screen, pg.Color(255, 46, 0), bar_cur)
-        pg.draw.rect(screen, pg.Color(255, 254, 203), bar_cur, 2)
     #### DRAW HP BAR FUNCTION END ####
 
     def walk(self, direction):
@@ -179,8 +178,7 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect(bottomleft=(self.x, self.dy))
         surface.blit(self.image, self.rect)
 
-        pg.draw.rect(surface, (255, 255, 255),
-                     self.rect, 2)
+
 
     def animation(self, animation_name="base"):
         if self.cur_animation == 'attack':
