@@ -7,6 +7,8 @@ class Skeleton(pygame.sprite.Sprite):
 
     def __init__(self, sprites_idle, sprites_attack, sprites_move, target, x, y):
         super().__init__()
+        self.width = width
+        self.height = height
         self.enemy_idle = sprites_idle
         self.enemy_attack = sprites_attack
         self.enemy_move = sprites_move
@@ -42,6 +44,11 @@ class Skeleton(pygame.sprite.Sprite):
             if rect_check.colliderect(ground.rect):
                 return True
         return False
+
+    #### SCALE ####
+    def scale(self,img,  width, height):
+        img = pygame.transform.scale(img, width, height )
+        return img
 
     #### ON GROUND FUNCTION END ####
 
@@ -127,7 +134,7 @@ class Skeleton(pygame.sprite.Sprite):
 
     def dist_to_target_y(self):
         pos_y = self.rect.y
-        pos_target_y = self.target.sprice.rect.y
+        pos_target_y = self.target.sprite.rect.y
         return abs(pos_target_y - pos_y)
 
     #### DIST FUNCTIONS END ####
@@ -140,7 +147,7 @@ class Skeleton(pygame.sprite.Sprite):
         if self.enemy_idle_index < len(self.enemy_idle):
             self.image = self.enemy_idle[int(self.enemy_idle_index)]
             if not self.walking:
-                self.image = pygame.transform.flip(self.image, True, False)
+                self.image = self.scale(pygame.transform.flip(self.image, True, False))
         else:
             self.enemy_idle_index = 0
 

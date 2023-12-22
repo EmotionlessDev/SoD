@@ -92,4 +92,4 @@ while play:
         menu.draw()
 
     pg.display.flip()
-    clock.tick(FPS)
+    clock.tick(60)
