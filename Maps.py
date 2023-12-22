@@ -30,7 +30,7 @@ village_decoration = [
 ]
 
 village_script = [
-    "                                                                                                                                                                                                                   0                                              ",
+    "                                                                                                                                                                                                                   0                                  1           ",
     "                                                                                                                                                                                                                                                                  ",
     "                                                                                                                                                                                                                                                                  ",
     "                                                                                                                                                                                                                                                                  ",
@@ -47,16 +47,48 @@ village_script = [
 #  CASTLE LOCATION
 #  front entrance room
 front_entrance_map = [
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "FFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFF",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
 ]
+
+front_entrance_decoration = [
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  "
+]
+
+front_entrance_script = [
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  ",
+    "                                  "
+]
+
+

@@ -41,6 +41,7 @@ class Player(pg.sprite.Sprite):
         self.image = self.animations[self.cur_animation][self.cur_frame]
 
         self.jump_y = 0
+        self.in_castle = False
 
         self.__last__jerk_ticks = pg.time.get_ticks()
         self.__last_attack_ticks = 0

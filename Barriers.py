@@ -22,10 +22,3 @@ class Barrier:
     def update(self, scroll, surface):
         self.draw(surface)
         self.rect.move_ip(scroll, 0)
-
-
-def create_barrier(width, height, group, x1, x2, surface):
-    barrier1 = Barrier(width, height, group, x1)
-    barrier2 = Barrier(width, height, group, x2)
-    barrier1.draw(surface)
-    barrier2.draw(surface)
