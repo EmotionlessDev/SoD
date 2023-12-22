@@ -1,8 +1,6 @@
 import pygame as pg
 import sys
 from Constants import *
-
-
 pg.init()
 
 
@@ -76,4 +74,4 @@ while play:
         menu.draw()
 
     pg.display.flip()
-    clock.tick(FPS)
+    clock.tick(60)

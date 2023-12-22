@@ -1,11 +1,25 @@
+import math
 import pygame
 import random
-from math import sqrt
+from math import sqrt, ceil
 
 
 class Skeleton(pygame.sprite.Sprite):
 
-    def __init__(self, sprites_idle, sprites_attack, sprites_move, target, x, y):
+    def __init__(
+        self,
+        sprites_idle: list,
+        sprites_attack: list,
+        sprites_move: list,
+        target,
+        x: int,
+        y: int,
+        hp: int = 100,
+        damage: int = 15,
+        speed: float = 0.5,
+        attack_radius: int = 39,
+        visibility_radius: int = 350,
+    ):
         super().__init__()
         self.enemy_idle = sprites_idle
         self.enemy_attack = sprites_attack
@@ -19,17 +33,49 @@ class Skeleton(pygame.sprite.Sprite):
         self.image = self.enemy_idle[self.enemy_idle_index]
         self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = 0
-        self.damage = 1
+        self.speed_change = speed
+        self.damage = damage
         self.move = 0
         self.gravity = 10
         self.walking = None  # True - Right, False - Left, None - not walking
         self.move_delay = 0
-        self.enemy_attack_radius = 39
-        self.enemy_visibility_radius = 350
+        self.enemy_attack_radius = attack_radius
+        self.enemy_visibility_radius = visibility_radius
         self.target = target
         self.action_type = None
         self.idle_timer = 0
         self.target_to_move = (None, None)
+        self.hp = hp
+        self.start_hp = hp
+        self.last_attack_tick = False
+
+    #### ATTACK LOGIC FUNCTION START ####
+    def attack(self):
+        if self.last_attack_tick:
+            self.target.sprite.hp -= self.damage
+            self.last_attack_tick = False
+
+            if self.target.sprite.hp <= 0:
+
+                self.target.kill()
+
+
+    #### ATTACK LOGIC FUNCTION END ####
+
+    #### DRAW HP BAR FUNCTION START ####
+    def draw_hp_bar(self, screen):
+        cur_hp = (self.hp*100)/self.start_hp
+        bar_x = self.rect.midbottom[0]
+        bar_y = self.rect.midbottom[1]+10
+        bar_cur = pygame.Rect((bar_x-25, bar_y), (50*cur_hp/100, 8))
+        pygame.draw.rect(screen, pygame.Color(255, 46, 0), bar_cur)
+        pygame.draw.rect(screen, pygame.Color(255, 254, 203), bar_cur, 2)
+    #### DRAW HP BAR FUNCTION END ####
+
+    #### DRAW RECT AROUND MOB FUNCTION START ####
+    def draw_rect_around(self, screen):
+        pygame.draw.rect(screen, "red", self.rect, 2)
+    #### DRAW RECT AROUND MOB FUNCTION START ####
 
     #### ON GROUND FUNCTION START ####
     # This function checks if the mob is on the ground
@@ -56,7 +102,7 @@ class Skeleton(pygame.sprite.Sprite):
             self.move_delay -= 1
             self.animate_idle()
         elif self.rect.x < pos_x:
-            self.speed += 0.5
+            self.speed += self.speed_change
             self.walking = True
             if self.on_ground(self.rect.bottomright, int(self.speed), blocks_group):
                 self.animate_move()
@@ -67,7 +113,7 @@ class Skeleton(pygame.sprite.Sprite):
             if int(self.speed) == 1:
                 self.speed = 0
         elif self.rect.x > pos_x:
-            self.speed += 0.5
+            self.speed += self.speed_change
             self.walking = False
             if self.on_ground(self.rect.bottomleft, int(self.speed), blocks_group):
                 self.animate_move()
@@ -131,8 +177,6 @@ class Skeleton(pygame.sprite.Sprite):
         return abs(pos_target_y - pos_y)
 
     #### DIST FUNCTIONS END ####
-    def attack(self):
-        pass
 
     #### FUNCTIONS FOR ANIMATIONS START ####
     def animate_idle(self):
@@ -154,7 +198,9 @@ class Skeleton(pygame.sprite.Sprite):
             self.enemy_move_index = 0
 
     def animate_attack(self):
-        self.enemy_attack_index += 0.1
+        self.enemy_attack_index += 0.3
+        if (int(self.enemy_attack_index) == len(self.enemy_attack)):
+            self.last_attack_tick = True
         if self.enemy_attack_index < len(self.enemy_attack):
             self.image = self.enemy_attack[int(self.enemy_attack_index)]
             if not self.walking:
@@ -223,10 +269,12 @@ class Skeleton(pygame.sprite.Sprite):
     #### UPDATE BEGIN ####
     # ground_collisions: dict with collisions
     # blocks_group: list (list of all ground blocks in game)
-    def update(self, ground_collisions: dict, blocks_group: list):
+    def update(self, ground_collisions: dict, blocks_group: list, screen):
         # secondary calls
+        self.draw_hp_bar(screen)
         self.apply_gravity(ground_collisions)
         self.scroll()
+        self.draw_rect_around(screen)
         # if target in attack radius
         if self.in_attack_radius():
             self.logic_attack()
