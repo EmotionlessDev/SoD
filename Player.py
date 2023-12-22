@@ -4,8 +4,10 @@ pg.init()
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height, hp = 100):
+    def __init__(self, x, y, width, height, hp=100):
         pg.sprite.Sprite.__init__(self)
+        self.hp = hp
+        self.start_hp = hp
         self.x = x
         self.y = y
         self.dx = x
@@ -50,6 +52,16 @@ class Player(pg.sprite.Sprite):
         self.on_ground = False
         self.hp = hp
 
+    #### DRAW HP BAR FUNCTION START ####
+    def draw_hp_bar(self, screen):
+        cur_hp = (self.hp * 100) / self.start_hp
+        bar_x = self.rect.midbottom[0]
+        bar_y = self.rect.midbottom[1] + 10
+        bar_cur = pg.Rect((bar_x - 25, bar_y), (50 * cur_hp / 100, 8))
+        pg.draw.rect(screen, pg.Color(255, 46, 0), bar_cur)
+        pg.draw.rect(screen, pg.Color(255, 254, 203), bar_cur, 2)
+    #### DRAW HP BAR FUNCTION END ####
+
     def walk(self, direction):
         self.direction = direction
         if self.direction == "right":
@@ -76,16 +88,20 @@ class Player(pg.sprite.Sprite):
         for block in blocks_group:
             # relative block right
             point_right_top = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + 20)
-            point_right_center = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + block.rect.height // 2)
-            point_right_bottom = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll, block.rect.y + block.rect.height - 20)
+            point_right_center = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll,
+                                  block.rect.y + block.rect.height // 2)
+            point_right_bottom = (block.rect.x + block.rect.width + self.buffer_collision - self.scroll,
+                                  block.rect.y + block.rect.height - 20)
 
             if (self.rect.collidepoint(point_right_top) or self.rect.collidepoint(
                     point_right_center) or self.rect.collidepoint(point_right_bottom)) and self.direction == 'left':
                 self.direction_vector.x = 0
             # relative block left
             point_left_top = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + 20)
-            point_left_center = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height // 2)
-            point_left_bottom = (block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height - 20)
+            point_left_center = (
+            block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height // 2)
+            point_left_bottom = (
+            block.rect.x - self.buffer_collision - self.scroll, block.rect.y + block.rect.height - 20)
 
             if (self.rect.collidepoint(point_left_top) or self.rect.collidepoint(
                     point_left_center) or self.rect.collidepoint(point_left_bottom)) and self.direction == 'right':
@@ -98,7 +114,6 @@ class Player(pg.sprite.Sprite):
             if self.rect.colliderect(overflow_rect_on_block):
                 self.direction_vector.y = 0
 
-
     def apply_gravity(self):
         if self.on_ground == False:
             self.direction_vector.y += 1.1
@@ -107,17 +122,15 @@ class Player(pg.sprite.Sprite):
 
             self.direction_vector.y = 0
 
-
-
     def jump(self):
 
         self.direction_vector.y += -13
+
     def jerk(self):
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             self.buffer_collision = 75
             if self.last_direction == "right":
                 for i in range(self.jerk_value):
-
                     self.direction_vector.x += 1
                     self.horizontal_movement_collision(self.blocks_group)
 
@@ -125,7 +138,6 @@ class Player(pg.sprite.Sprite):
 
             else:
                 for i in range(self.jerk_value):
-
                     self.direction_vector.x -= 1
                     self.horizontal_movement_collision(self.blocks_group)
 
@@ -151,12 +163,13 @@ class Player(pg.sprite.Sprite):
             self.attack()
         if not (bt[pg.K_d] or bt[pg.K_a] or bt[pg.K_w]):
             self.scroll = 0
+
     def draw(self, surface):
         self.rect = self.image.get_rect(bottomleft=(self.x, self.dy))
         surface.blit(self.image, self.rect)
 
         pg.draw.rect(surface, (255, 255, 255),
-                         self.rect, 2)
+                     self.rect, 2)
 
     def animation(self, animation_name="base"):
         if self.cur_animation == 'attack':
@@ -179,12 +192,14 @@ class Player(pg.sprite.Sprite):
 
         if self.direction == 'left':
             self.image = pg.transform.flip(self.image, True, False)
+
     def script_playing(self, script_collisions):
         if script_collisions:
             for script in script_collisions:
                 script.command(*script.args)
-    def update(self, surface, blocks_group, script_collisions):
 
+    def update(self, surface, blocks_group, script_collisions):
+        self.draw_hp_bar(surface)
         self.animation("base")
         self.apply_gravity()
         self.blocks_group = blocks_group

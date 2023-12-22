@@ -32,8 +32,6 @@ system_group = pg.sprite.Group()
 player = pg.sprite.GroupSingle()
 player.add(
     Player(
-        r"esev-sheet(main animation).png",
-        14,
         virtual_surface.get_width() // 2,
         virtual_surface.get_height() - 4 * tile_size,
         tile_size,
@@ -87,7 +85,7 @@ system_blocks = {
 }
 
 background_music = pg.mixer.music.load(r'sounds/background_music.wav')
-pg.mixer.music.play(-1)
+#pg.mixer.music.play(0)
 
 # cursor = pg.image.load(r'menu/cursor.png').convert_alpha()
 # pg.mouse.set_visible(False)
