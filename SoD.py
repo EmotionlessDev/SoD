@@ -25,14 +25,14 @@ create_cloud(clouds, virtual_surface)
 player = pg.sprite.GroupSingle()
 player.add(
     Player(
-        r"esev-sheet(main animation).png",
-        14,
-        virtual_surface.get_width() // 2,
-        virtual_surface.get_height() - 4 * tile_size,
-        tile_size,
-        tile_size * 2,
+                virtual_surface.get_width() // 2,
+                virtual_surface.get_height() - 4 * tile_size,
+                tile_size,
+                tile_size * 2,
     )
 )
+
+
 
 world.world_generation(
     pictures_bl,
@@ -109,4 +109,4 @@ while play:
         menu.draw()
 
     pg.display.flip()
-    clock.tick(FPS)
+    clock.tick(60)

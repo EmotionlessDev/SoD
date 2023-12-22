@@ -127,7 +127,7 @@ class Skeleton(pygame.sprite.Sprite):
 
     def dist_to_target_y(self):
         pos_y = self.rect.y
-        pos_target_y = self.target.sprice.rect.y
+        pos_target_y = self.target.sprite.rect.y
         return abs(pos_target_y - pos_y)
 
     #### DIST FUNCTIONS END ####
