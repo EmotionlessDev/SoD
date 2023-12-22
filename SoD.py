@@ -41,7 +41,6 @@ skeleton = Skeleton(
 enemies_group.add(skeleton)
 
 menu = Menu(r"menu/background_menu.jpg", font, virtual_surface, 40, 241, 71)
-
 while play:
     for event in pg.event.get():
         if event.type == pg.QUIT:  # нажатие на "х"
@@ -86,7 +85,7 @@ while play:
             enemies_group, blocks_group, False, False
         )
         enemies_group.draw(virtual_surface)
-        enemies_group.update(ground_collisions_enemies, blocks_group)
+        enemies_group.update(ground_collisions_enemies, blocks_group, virtual_surface)
 
     else:
         menu.draw()
