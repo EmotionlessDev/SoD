@@ -15,7 +15,7 @@ class Skeleton(pygame.sprite.Sprite):
         x: int,
         y: int,
         hp: int = 100,
-        damage: int = 10,
+        damage: int = 15,
         speed: float = 0.5,
         attack_radius: int = 39,
         visibility_radius: int = 350,
@@ -54,6 +54,12 @@ class Skeleton(pygame.sprite.Sprite):
         if self.last_attack_tick:
             self.target.sprite.hp -= self.damage
             self.last_attack_tick = False
+
+            if self.target.sprite.hp <= 0:
+
+                self.target.kill()
+
+
     #### ATTACK LOGIC FUNCTION END ####
 
     #### DRAW HP BAR FUNCTION START ####
@@ -192,7 +198,7 @@ class Skeleton(pygame.sprite.Sprite):
             self.enemy_move_index = 0
 
     def animate_attack(self):
-        self.enemy_attack_index += 0.1
+        self.enemy_attack_index += 0.3
         if (int(self.enemy_attack_index) == len(self.enemy_attack)):
             self.last_attack_tick = True
         if self.enemy_attack_index < len(self.enemy_attack):

@@ -1,13 +1,14 @@
 import pygame as pg
-
+import Constants
 pg.init()
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, x, y, width, height, hp=100):
+    def __init__(self, x, y, width, height, hp=100, damage=10):
         pg.sprite.Sprite.__init__(self)
         self.hp = hp
         self.start_hp = hp
+        self.damage = damage
         self.x = x
         self.y = y
         self.dx = x
@@ -23,7 +24,7 @@ class Player(pg.sprite.Sprite):
         self.animations = {"base": [], 'attack': []}
         self.settings_frame = {"base": (14, 0.2), 'attack': (10, 0.3)}  # frames count / speed
         self.is_attacking = False
-
+        self.surface = ''
         self.w_base = pg.image.load(r"characters/Player/base/hero_base_1.png").convert_alpha().get_width()
         self.h_base = pg.image.load(r"characters/Player/base/hero_base_1.png").convert_alpha().get_height()
         for animation_name, value in self.animations.items():
@@ -78,10 +79,20 @@ class Player(pg.sprite.Sprite):
 
         if pg.time.get_ticks() - self.__last_attack_ticks > 100:
             self.animation("attack")
-        self.__last_attack_ticks = pg.time.get_ticks()
 
-    # def detected_target_attack:
-    #     for
+            if self.last_direction == 'left':
+                rect_attack = pg.Rect(self.rect.x - 100, self.rect.y, self.rect.width + 100, self.rect.height)
+            if self.last_direction == 'right':
+                rect_attack = pg.Rect(self.rect.x, self.rect.y, self.rect.width + 100, self.rect.height)
+
+            pg.draw.rect( self.surface, "yellow", rect_attack, 2)
+            if rect_attack.collidelist(Constants.enemies_group.sprites()) != -1 :
+                for enemy in Constants.enemies_group:
+                    if enemy.rect.colliderect(rect_attack):
+                        enemy.hp -= self.damage
+                        if enemy.hp <= 0:
+                            enemy.kill()
+        self.__last_attack_ticks = pg.time.get_ticks()
 
     def horizontal_movement_collision(self, blocks_group):
 
@@ -199,6 +210,7 @@ class Player(pg.sprite.Sprite):
                 script.command(*script.args)
 
     def update(self, surface, blocks_group, script_collisions):
+        self.surface = surface
         self.draw_hp_bar(surface)
         self.animation("base")
         self.apply_gravity()
