@@ -59,6 +59,16 @@ while play:
                                       pictures_bl, pictures_dec, script_blocks,
                                       virtual_surface.get_width() + 3 * tile_size)
                 player.sprite.new_room = False
+                for enemy in enemies_group:
+                    en_hp += 10
+                    en_dam += 5
+                hill_change = random.randint(1, 10)
+                if hill_change == 1:
+                    player.sprite.hp += 10
+                    if player.sprite.hp == player.sprite.start_hp:
+                        player.sprite.start_hp += 10
+                player.sprite.damage += 10
+
             # background
             background_group.draw(virtual_surface)
             # world

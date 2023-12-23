@@ -60,6 +60,8 @@ player.add(
         enemies_group
     )
 )
+en_hp = 100
+en_dam = 10
 
 #  Block groups for castle
 background_group = pg.sprite.Group()
@@ -103,27 +105,27 @@ script_blocks = {
     "P": [[import_sprite(r"./characters/Peasant/Idle/"),
           import_sprite(r"./characters/Peasant/Attack/"),
           import_sprite(r"./characters/Peasant/Move/"),
-          player], enemies_group],
+          player], enemies_group, (en_hp, en_dam)],
     "D": [[import_sprite(r"./characters/Dog/Idle/"),
           import_sprite(r"./characters/Dog/Attack/"),
           import_sprite(r"./characters/Dog/Move/"),
-          player], enemies_group],
+          player], enemies_group, (en_hp, en_dam)],
     "F": [[import_sprite(r"./characters/Farmer/Idle/"),
           import_sprite(r"./characters/Farmer/Attack/"),
           import_sprite(r"./characters/Farmer/Move/"),
-          player], enemies_group],
+          player], enemies_group, (en_hp, en_dam)],
     "K": [[import_sprite(f"./characters/Knight/Idle/"),
            import_sprite(f"./characters/Knight/Attack/"),
            import_sprite(f"./characters/Knight/Move/"),
-           player], enemies_group],
+           player], enemies_group, (en_hp, en_dam)],
     "G": [[import_sprite(f"./characters/Golden_Knight/Idle/"),
            import_sprite(f"./characters/Golden_Knight/Attack/"),
            import_sprite(f"./characters/Golden_Knight/Move/"),
-           player], enemies_group],
+           player], enemies_group, (en_hp, en_dam)],
     "S": [[import_sprite(f"./characters/Skeleton/Idle/"),
            import_sprite(f"./characters/Skeleton/Attack/"),
            import_sprite(f"./characters/Skeleton/Move/"),
-           player], enemies_group]
+           player], enemies_group, (en_hp, en_dam)]
 }
 
 #  Background music
