@@ -59,6 +59,16 @@ while play:
                                       pictures_bl, pictures_dec, script_blocks,
                                       virtual_surface.get_width() + 3 * tile_size)
                 player.sprite.new_room = False
+                for enemy in enemies_group:
+                    en_hp += 10
+                    en_dam += 5
+                hill_change = random.randint(1, 10)
+                if hill_change == 1:
+                    player.sprite.hp += 10
+                    if player.sprite.hp == player.sprite.start_hp:
+                        player.sprite.start_hp += 10
+                player.sprite.damage += 10
+
             # background
             background_group.draw(virtual_surface)
             # world
@@ -72,7 +82,7 @@ while play:
             player.update(virtual_surface, ground_collisions, script_collisions)
             # Enemies
             ground_collisions_enemies = pg.sprite.groupcollide(
-                enemies_group, vil_blocks_group, False, False
+                enemies_group, cst_blocks_group, False, False
             )
             enemies_group.draw(virtual_surface)
             enemies_group.update(ground_collisions_enemies, vil_blocks_group, virtual_surface)
