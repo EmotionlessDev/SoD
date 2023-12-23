@@ -1,6 +1,7 @@
 from os import walk
 import pygame
 from Blocks import Block
+from World import World
 pygame.init()
 
 
@@ -17,4 +18,7 @@ def teleport(fade, group, obj):
     fade()
     group.empty()
     obj.in_castle = True
-    pass
+
+
+def create_room(obj):
+    obj.new_room = True

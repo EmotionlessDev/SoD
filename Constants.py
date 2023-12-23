@@ -1,4 +1,5 @@
 import pygame as pg
+import random
 from script_functions import *
 from import_sprite import import_sprite  # function for importion sprite in dir
 from Player import Player
@@ -48,6 +49,7 @@ vil_decoration_group = pg.sprite.Group()
 vil_script_group = pg.sprite.Group()
 
 #  Characters
+enemies_group = pg.sprite.Group()
 player = pg.sprite.GroupSingle()
 player.add(
     Player(
@@ -55,9 +57,15 @@ player.add(
         virtual_surface.get_height() - 4 * tile_size,
         tile_size,
         tile_size * 2,
+        enemies_group
     )
 )
-enemies_group = pg.sprite.Group()
+
+#  Block groups for castle
+background_group = pg.sprite.Group()
+cst_blocks_group = pg.sprite.Group()
+cst_decoration_group = pg.sprite.Group()
+cst_script_group = pg.sprite.Group()
 
 #  Dicts with textures and scripts
 pictures_bl = {
@@ -90,6 +98,8 @@ script_blocks = {
                             tile_size, vil_blocks_group)],
     "1": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()),
           teleport, (menu.fade, enemies_group, player.sprite)],
+    "2": [r"textures/world/barrier.png", 1, (tile_size * 2, virtual_surface.get_height()),
+          create_room, [player.sprite]],
     "P": [[import_sprite(r"./characters/Peasant/Idle/"),
           import_sprite(r"./characters/Peasant/Attack/"),
           import_sprite(r"./characters/Peasant/Move/"),
@@ -101,12 +111,24 @@ script_blocks = {
     "F": [[import_sprite(r"./characters/Farmer/Idle/"),
           import_sprite(r"./characters/Farmer/Attack/"),
           import_sprite(r"./characters/Farmer/Move/"),
-          player], enemies_group]
+          player], enemies_group],
+    "K": [[import_sprite(f"./characters/Knight/Idle/"),
+           import_sprite(f"./characters/Knight/Attack/"),
+           import_sprite(f"./characters/Knight/Move/"),
+           player], enemies_group],
+    "G": [[import_sprite(f"./characters/Golden_Knight/Idle/"),
+           import_sprite(f"./characters/Golden_Knight/Attack/"),
+           import_sprite(f"./characters/Golden_Knight/Move/"),
+           player], enemies_group],
+    "S": [[import_sprite(f"./characters/Skeleton/Idle/"),
+           import_sprite(f"./characters/Skeleton/Attack/"),
+           import_sprite(f"./characters/Skeleton/Move/"),
+           player], enemies_group]
 }
 
 #  Background music
 background_music = pg.mixer.music.load(r'sounds/background_music.wav')
-#pg.mixer.music.play(0)
+pg.mixer.music.play(-1)
 
 #  Start location
 village = World(village_map, village_decoration, village_script, tile_size)
@@ -116,30 +138,23 @@ create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
 village.world_generation(
-    pictures_bl,
-    pictures_dec,
-    script_blocks,
     vil_blocks_group,
     vil_decoration_group,
     vil_script_group,
-    virtual_surface,
+    pictures_bl,
+    pictures_dec,
+    script_blocks
 )
-
-#  Block groups for castle
-background_group = pg.sprite.Group()
-cst_blocks_group = pg.sprite.Group()
-cst_decoration_group = pg.sprite.Group()
-cst_script_group = pg.sprite.Group()
 
 #  Castle location
 castle_background = CastleBackground((tile_size, tile_size), background_group)
 castle = World(front_entrance_map, front_entrance_decoration, front_entrance_script, tile_size)
 castle.world_generation(
-    pictures_bl,
-    pictures_dec,
-    script_blocks,
     cst_blocks_group,
     cst_decoration_group,
     cst_script_group,
-    virtual_surface
+    pictures_bl,
+    pictures_dec,
+    script_blocks,
+
 )
