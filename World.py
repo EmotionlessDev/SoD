@@ -12,8 +12,8 @@ class World:
         self.decor = decor
         self.script = script
 
-    def world_generation(self, pictures_bl, pictures_dec, pictures_scr,
-                         group_spr, group_texture, group_scr, world_px=0):
+    def world_generation(self, group_spr, group_texture, group_scr,
+                         pictures_bl, pictures_dec, pictures_scr, world_px=0):
         for row in range(len(self.world_map)):
             for col in range(len(self.world_map[row])):
                 x = world_px + col * self.tile_size

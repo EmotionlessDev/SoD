@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-from Constants import *
+from Variables import *
 pg.init()
 
 
@@ -52,6 +52,13 @@ while play:
             enemies_group.update(ground_collisions_enemies, vil_blocks_group)
 
         else:
+            if player.sprite.new_room:
+                index = random.randint(0, len(room_list) - 1)
+                room = World(room_list[index], room_dec[index], script_list[index], tile_size)
+                room.world_generation(cst_blocks_group, cst_decoration_group, cst_script_group,
+                                      pictures_bl, pictures_dec, script_blocks,
+                                      virtual_surface.get_width() + 3 * tile_size)
+                player.sprite.new_room = False
             # background
             background_group.draw(virtual_surface)
             # world
@@ -74,4 +81,4 @@ while play:
         menu.draw()
 
     pg.display.flip()
-    clock.tick(60)
+    clock.tick(FPS)
