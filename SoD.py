@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-from Variables import *
+from Constants import *
 pg.init()
 
 
@@ -49,7 +49,7 @@ while play:
                 enemies_group, vil_blocks_group, False, False
             )
             enemies_group.draw(virtual_surface)
-            enemies_group.update(ground_collisions_enemies, vil_blocks_group)
+            enemies_group.update(ground_collisions_enemies, vil_blocks_group, virtual_surface)
 
         else:
             if player.sprite.new_room:
@@ -75,7 +75,7 @@ while play:
                 enemies_group, vil_blocks_group, False, False
             )
             enemies_group.draw(virtual_surface)
-            enemies_group.update(ground_collisions_enemies, vil_blocks_group)
+            enemies_group.update(ground_collisions_enemies, vil_blocks_group, virtual_surface)
 
     else:
         menu.draw()
