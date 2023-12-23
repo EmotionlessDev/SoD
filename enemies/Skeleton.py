@@ -63,13 +63,7 @@ class Skeleton(pygame.sprite.Sprite):
             self.target.sprite.hp -= self.damage
             self.last_attack_tick = False
 
-            if self.target.sprite.hp <= 0:
 
-                # self.target.kill()
-
-                ####OPPEN MENU####
-                self.menu.playing = False
-                self.menu.current_window = "Start"
 
 
     #### ATTACK LOGIC FUNCTION END ####
@@ -196,6 +190,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.enemy_idle_index += 0.1
         if self.enemy_idle_index < len(self.enemy_idle):
             self.image = self.enemy_idle[int(self.enemy_idle_index)]
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
             if not self.walking:
                 self.image = pygame.transform.flip(self.image, True, False)
         else:
@@ -290,7 +285,7 @@ class Skeleton(pygame.sprite.Sprite):
     #### UPDATE BEGIN ####
     # ground_collisions: dict with collisions
     # blocks_group: list (list of all ground blocks in game)
-    def update(self, ground_collisions: dict, blocks_group: list, screen, menu: object):
+    def update(self, ground_collisions: dict, blocks_group: list, screen: object):
 
         # secondary calls
         self.draw_hp_bar(screen)
@@ -308,7 +303,6 @@ class Skeleton(pygame.sprite.Sprite):
         else:
             self.logic_idle(blocks_group)
 
-        self.menu = menu
 
 
     #### UPDATE END ####

@@ -30,17 +30,17 @@ world.world_generation(
 )
 
 # Create test skeleton
-skeleton = Skeleton(
-    import_sprite("./characters/Skeleton/Idle/"),
-    import_sprite("./characters/Skeleton/Attack/"),
-    import_sprite("./characters/Skeleton/Move/"),
-    player,
-    100,
-    player.sprite.rect.y,
-    tile_size - 10,
-    tile_size * 2 - 20,
-)
-enemies_group.add(skeleton)
+# skeleton = Skeleton(
+#     import_sprite("./characters/Skeleton/Idle/"),
+#     import_sprite("./characters/Skeleton/Attack/"),
+#     import_sprite("./characters/Skeleton/Move/"),
+#     player,
+#     100,
+#     player.sprite.rect.y,
+#     tile_size - 10,
+#     tile_size * 2 - 20,
+# )
+# enemies_group.add(skeleton)
 
 menu = Menu(r"menu/background_menu.jpg", font, virtual_surface, 40, 241, 71)
 while play:
@@ -81,13 +81,13 @@ while play:
         ground_collisions = pg.sprite.spritecollide(player.sprite, blocks_group, False)
         script_collisions = pg.sprite.spritecollide(player.sprite, system_group, True)
         # player
-        player.update(virtual_surface, ground_collisions, script_collisions)
+        player.update(virtual_surface, ground_collisions, script_collisions, menu)
         # Enemies
         ground_collisions_enemies = pg.sprite.groupcollide(
             enemies_group, blocks_group, False, False
         )
         enemies_group.draw(virtual_surface)
-        enemies_group.update(ground_collisions_enemies, blocks_group, virtual_surface, menu)
+        enemies_group.update(ground_collisions_enemies, blocks_group, virtual_surface)
 
     else:
         menu.draw()

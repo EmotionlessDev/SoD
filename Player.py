@@ -52,6 +52,7 @@ class Player(pg.sprite.Sprite):
         self.buffer_collision = 25
         self.on_ground = False
         self.hp = hp
+        self.menu = ""
 
     #### DRAW HP BAR FUNCTION START ####
     def draw_hp_bar(self, screen):
@@ -84,7 +85,7 @@ class Player(pg.sprite.Sprite):
             if self.last_direction == 'right':
                 rect_attack = pg.Rect(self.rect.x, self.rect.y, self.rect.width + 100, self.rect.height)
 
-            pg.draw.rect( self.surface, "yellow", rect_attack, 2)
+            # pg.draw.rect( self.surface, "yellow", rect_attack, 2)
             if rect_attack.collidelist(Constants.enemies_group.sprites()) != -1 :
                 for enemy in Constants.enemies_group:
                     if enemy.rect.colliderect(rect_attack):
@@ -140,15 +141,15 @@ class Player(pg.sprite.Sprite):
         if pg.time.get_ticks() - self.__last__jerk_ticks >= 1300:
             self.buffer_collision = 75
             if self.last_direction == "right":
-                for i in range(self.jerk_value):
-                    self.direction_vector.x += 1
+                for i in range(self.jerk_value // 5):
+                    self.direction_vector.x += 5
                     self.horizontal_movement_collision(self.blocks_group)
 
                 self.buffer_collision = 5
 
             else:
-                for i in range(self.jerk_value):
-                    self.direction_vector.x -= 1
+                for i in range(self.jerk_value// 5):
+                    self.direction_vector.x -= 5
                     self.horizontal_movement_collision(self.blocks_group)
 
                 self.buffer_collision = 5
@@ -178,7 +179,12 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect(bottomleft=(self.x, self.dy))
         surface.blit(self.image, self.rect)
 
-
+    def falling_outside(self):
+        if self.rect.top <= 0:
+            self.direction_vector.y = 0
+            print(self.rect.top)
+        if self.rect.bottom > Constants.screen.get_size()[1]:
+            self.hp = 0
 
     def animation(self, animation_name="base"):
         if self.cur_animation == 'attack':
@@ -207,7 +213,14 @@ class Player(pg.sprite.Sprite):
             for script in script_collisions:
                 script.command(*script.args)
 
-    def update(self, surface, blocks_group, script_collisions):
+    def has_health(self):
+        if self.hp <= 0:
+            self.menu.playing = False
+            self.menu.current_window = "Start"
+
+    def update(self, surface, blocks_group, script_collisions, menu):
+        self.has_health()
+        self.falling_outside()
         self.surface = surface
         self.draw_hp_bar(surface)
         self.animation("base")
@@ -230,3 +243,4 @@ class Player(pg.sprite.Sprite):
 
         self.scroll = -self.direction_vector.x
         self.draw(surface)
+        self.menu = menu
