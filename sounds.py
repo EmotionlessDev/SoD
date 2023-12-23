@@ -3,12 +3,13 @@ import pygame.gfxdraw
 pygame.init()
 
 
-class VolumeSlider:
-    def __init__(self, x, y, width, height):
+class VolumeSoundsSlider:
+    def __init__(self, x, y, width, height, sound_effect):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.sound_effect = sound_effect
         self.value = pygame.mixer.music.get_volume()
         self.rect = pygame.Rect(x - width // 2, y - height // 2, width, height)
         self.slider_rect = pygame.Rect(self.rect.left + int(self.value * width) - 5, self.rect.top, 10, self.height)
@@ -32,5 +33,3 @@ class VolumeSlider:
 
         pygame.gfxdraw.aacircle(screen, center_x, self.y, self.height // 2, (0, 0, 0))
         pygame.gfxdraw.filled_circle(screen, center_x, self.y, self.height // 2, (0, 0, 0))
-
-

@@ -20,7 +20,6 @@ clouds = pg.sprite.Group()
 create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
 create_cloud(clouds, virtual_surface)
-
 player = pg.sprite.GroupSingle()
 player.add(
     Player(

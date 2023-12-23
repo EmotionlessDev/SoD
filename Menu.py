@@ -1,6 +1,7 @@
 import pygame as pg
 from Button import Button
 from Volume import VolumeSlider
+from sounds import VolumeSoundsSlider
 import sys
 pg.init()
 
@@ -34,23 +35,27 @@ class Menu:
                                    width_btn, height_btn,
                                    " Аудио", r"menu/button_img.png",
                                    r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
-        self.back_button = Button(self.surface.get_width() // 2 - width_btn // 2, 350,
+        self.back_button = Button(self.surface.get_width() // 2 - width_btn // 2, 450,
                                   width_btn, height_btn,
                                   "Назад", r"menu/button_img.png",
                                   r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
         self.audio_music_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150,
                                          width_btn, height_btn,
                                          "Настройки музыки", r"menu/button_img.png",
-                                         r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
-        self.audio_sound_button = Button(self.surface.get_width() // 2 - width_btn // 2, 250,
+                                         None, r"sounds/button_click.mp3")
+        self.audio_sound_button = Button(self.surface.get_width() // 2 - width_btn // 2, 280,
                                          width_btn, height_btn,
-                                         "Настройки звуковых эффектов", r"menu/button_img.png",
-                                         r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+                                         "Настройки звуков", r"menu/button_img.png",
+                                         None, r"sounds/button_click.mp3")
         self.continue_button = Button(self.surface.get_width() // 2 - width_btn // 2, 150,
                                       width_btn, height_btn,
                                       "Продолжить", r"menu/button_img.png",
                                       r"menu/hovered_button.jpg", r"sounds/button_click.mp3")
+
+        pg.mixer.music.set_volume(0.2)
+        sound_effect = pg.mixer.Sound(r"sounds/button_click.mp3")
         self.volume_slider = VolumeSlider(self.surface.get_width() // 2, 250, 250, 40)
+        self.volume_sound_slider = VolumeSoundsSlider(self.surface.get_width() // 2, 380, 250, 40, sound_effect)
 
     def fade(self):
         running = True
@@ -62,13 +67,13 @@ class Menu:
             fade_surface.set_alpha(fade_alpha)
             self.surface.blit(fade_surface, (0, 0))
 
-            fade_alpha += 5
+            fade_alpha += 10
             if fade_alpha >= 105:
                 fade_alpha = 255
                 running = False
 
             pg.display.flip()
-            pg.time.Clock().tick(60)
+            pg.time.Clock().tick(120)
 
     def start_menu(self):
         text_surface = self.menu_font.render("Shadow of Desolation", True, (255, 255, 255))
@@ -123,18 +128,22 @@ class Menu:
         self.surface.blit(text_surface, text_rect)
 
         self.volume_slider.draw(self.surface)
+        self.volume_sound_slider.draw(self.surface)
 
         keys = pg.mouse.get_pressed()
         if keys[0] and self.back_button.is_hovered:
             self.fade()
             self.current_window = "Settings"
 
-        for btn in [self.audio_music_button, self.audio_sound_button, self.back_button]:
+        for btn in [self.back_button]:
             btn.handle_event(keys[0])
+
+        self.volume_sound_slider.handle_event(keys[0], pg.mouse.get_pos())
 
         self.volume_slider.handle_event(keys[0], pg.mouse.get_pos())
 
-        for btn in [self.audio_button, self.back_button]:
+        self.volume_sound_slider.handle_event(keys[0], pg.mouse.get_pos())
+        for btn in [self.audio_music_button, self.audio_sound_button, self.back_button]:
             btn.check_hover(pg.mouse.get_pos())
             btn.draw(self.surface)
 
@@ -175,3 +184,4 @@ class Menu:
     def draw(self):
         self.surface.blit(self.bg_image, (0, 0))
         self.menu_selection()
+
