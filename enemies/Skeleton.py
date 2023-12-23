@@ -18,7 +18,7 @@ class Skeleton(pygame.sprite.Sprite):
         width: int,
         height: int,
         hp: int = 100,
-        damage: int = 15,
+        damage: int = 9,
         speed: float = 0.5,
         attack_radius: int = 39,
         visibility_radius: int = 350,
