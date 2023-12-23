@@ -72,10 +72,10 @@ while play:
             player.update(virtual_surface, ground_collisions, script_collisions)
             # Enemies
             ground_collisions_enemies = pg.sprite.groupcollide(
-                enemies_group, vil_blocks_group, False, False
+                enemies_group, cst_blocks_group, False, False
             )
             enemies_group.draw(virtual_surface)
-            enemies_group.update(ground_collisions_enemies, vil_blocks_group, virtual_surface)
+            enemies_group.update(ground_collisions_enemies, cst_blocks_group, virtual_surface)
 
     else:
         menu.draw()
