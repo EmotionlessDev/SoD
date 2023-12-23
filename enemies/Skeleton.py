@@ -48,6 +48,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.hp = hp
         self.start_hp = hp
         self.last_attack_tick = False
+        self.screen = ""
 
     #### ATTACK LOGIC FUNCTION START ####
     def attack(self):
@@ -91,6 +92,16 @@ class Skeleton(pygame.sprite.Sprite):
 
     #### ON GROUND FUNCTION END ####
 
+    ####
+    def not_wall(self, x: tuple, delta: int, blocks_group: list):
+        rect_check = pygame.Rect(x[0] + int(delta), x[1], 1, self.rect.height-10)
+        for ground in blocks_group:
+            if rect_check.colliderect(ground.rect):
+                return False
+        return True
+
+    ####
+
     #### MOVE TO TARGET FUNCTION START ####
     # target: tuple (coords of target)
     # blocks_group: list (list of all ground blocks in game)
@@ -104,7 +115,7 @@ class Skeleton(pygame.sprite.Sprite):
         elif self.rect.x < pos_x:
             self.speed += self.speed_change
             self.walking = True
-            if self.on_ground(self.rect.bottomright, int(self.speed), blocks_group):
+            if self.on_ground(self.rect.bottomright, int(self.speed), blocks_group) and self.not_wall(self.rect.topright, int(self.speed), blocks_group):
                 self.animate_move()
                 self.rect.x += int(self.speed)
             else:
@@ -115,7 +126,7 @@ class Skeleton(pygame.sprite.Sprite):
         elif self.rect.x > pos_x:
             self.speed += self.speed_change
             self.walking = False
-            if self.on_ground(self.rect.bottomleft, int(self.speed), blocks_group):
+            if self.on_ground(self.rect.bottomleft, int(self.speed), blocks_group) and self.not_wall(self.rect.topleft, int(self.speed), blocks_group):
                 self.animate_move()
                 self.rect.x -= int(self.speed)
             else:
@@ -213,8 +224,8 @@ class Skeleton(pygame.sprite.Sprite):
     def apply_gravity(self, ground_collisions: dict):
         if self in ground_collisions:
             for ground in ground_collisions[self]:
-                if self.rect.bottom >= ground.rect.top:
-                    self.rect.bottom = ground.rect.top + 1
+                if self.rect.bottom > ground.rect.top and self.rect.bottom < ground.rect.top+50:
+                    self.rect.bottom = ground.rect.top+1
                     self.gravity = 0
         else:
             self.gravity = 10
@@ -271,6 +282,7 @@ class Skeleton(pygame.sprite.Sprite):
     # blocks_group: list (list of all ground blocks in game)
     def update(self, ground_collisions: dict, blocks_group: list, screen):
         # secondary calls
+        self.screen = screen
         self.draw_hp_bar(screen)
         self.apply_gravity(ground_collisions)
         self.scroll()
